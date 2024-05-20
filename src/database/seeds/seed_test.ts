@@ -18,7 +18,7 @@ export const userCollection: Collection<User> = database.collection("users");
 
 export const tagsCollection: Collection<Tag> = database.collection("tags");
 
-const seedDB = async (): Promise<void> => {
+export const seedDB = async (): Promise<void> => {
 	const hashedSeed: User[] = await seedHasher();
 	const tags_test: Tag[] = tags;
 

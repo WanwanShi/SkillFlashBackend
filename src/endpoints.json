@@ -1,5 +1,28 @@
 {
 	"GET /api": {
 		"description": "serves up a json representation of all the available endpoints of the api"
+	},
+	"GET /api/tags": {
+		"description": "serves an array of all tags",
+		"query": ["tagCategory"],
+		"exampleResponse": {
+			"tags": [
+				{
+					"_id": "664b46f82c0e05e0e615dd9f",
+					"tagName": "JavaScript",
+					"tagCategory": "Technical Skills"
+				},
+				{
+					"_id": "664b46f82c0e05e0e615dda0",
+					"tagName": "Python",
+					"tagCategory": "Technical Skills"
+				},
+				{
+					"_id": "664b46f82c0e05e0e615ddd0",
+					"tagName": "Testing Techniques",
+					"tagCategory": "Practical Knowledge"
+				}
+			]
+		}
 	}
 }

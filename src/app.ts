@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { apiRouter } from "./routes/apiRouter";
+import { customErrorHandler, mongoErrorHandler, serverErrorHandler } from "./errors/indes";
 export const app = express();
 app.use(cors());
 

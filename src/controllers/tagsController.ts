@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { fetchAllTags } from "../models/fetchAllTags";
+import { fetchAllTags } from "../models/tagsModel";
 
 export function getAllTags(_req: Request, res: Response, _next: NextFunction) {
 	fetchAllTags().then((tags) => {

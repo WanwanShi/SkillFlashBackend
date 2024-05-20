@@ -9,6 +9,13 @@ dotenv.config({
 const uri = process.env.URI as string;
 
 const client: MongoClient = new MongoClient(uri);
+const ENV = process.env.NODE_ENV || "development";
+let databaseString: string;
+if (ENV === "development") {
+	databaseString = "skillflash";
+} else {
+	databaseString = "skillflash_test";
+}
 
 const connectDB = async (): Promise<void> => {
 	try {
@@ -20,4 +27,4 @@ const connectDB = async (): Promise<void> => {
 	}
 };
 
-export { connectDB, client };
+export { connectDB, client, databaseString };

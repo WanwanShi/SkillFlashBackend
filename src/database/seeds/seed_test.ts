@@ -1,6 +1,6 @@
 import { Collection } from "mongodb";
 import { seedHasher } from "../data/test_data/users";
-import { connectDB, client } from "../connection";
+import { connectDB, client, databaseString } from "../connection";
 import tags from "../data/test_data/tags";
 
 export interface User {
@@ -13,11 +13,10 @@ export interface Tag {
 	tagCategory: string;
 }
 
-const database = client.db("skillflash");
-export const userCollection: Collection<User> =
-	database.collection("test_users");
+const database = client.db(databaseString);
+export const userCollection: Collection<User> = database.collection("users");
 
-export const tagsCollection: Collection<Tag> = database.collection("test_tags");
+export const tagsCollection: Collection<Tag> = database.collection("tags");
 
 const seedDB = async (): Promise<void> => {
 	const hashedSeed: User[] = await seedHasher();

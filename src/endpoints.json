@@ -23,7 +23,10 @@
 					"tagCategory": "practical-knowledge"
 				}
 			]
-		}
+		},
+		"errorResponse": [
+			{"GET 400": {"message": "Invalid query"}}
+		]
 	},
 	"POST /api/users/signup": {
 		"description": "serves an newly created user object with username,email and userId.",
@@ -32,7 +35,10 @@
 			"_id": "664c54c9f9398e48bdfa372a",
 			"username": "test1",
 			"email": "test1@gmail.com"
-		}
+		},
+		"errorResponse": [
+			{"POST 400": {"message": "failed to signup"}}
+		]
 	},
 	"POST /api/users/login": {
 		"description": "serves an exist user object",
@@ -41,9 +47,12 @@
 			"_id": "664c54c9f9398e48bdfa372a",
 			"username": "test1",
 			"email": "test1@gmail.com"
-		}
+		},
+		"errorResponse": [
+			{"POST 404": {"message": "username does not exist"}},
+			{"POST 400": {"message": "username and password does not match"}}
+		]
 	},
-
 	"GET /api/users/:username": {
 		"description": "serves an boolean value of the existence of the username",
 		"query": [],

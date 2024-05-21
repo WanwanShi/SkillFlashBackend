@@ -32,4 +32,3 @@ export const seedDB = async (): Promise<void> => {
 	} finally {
 	}
 };
-seedDB();

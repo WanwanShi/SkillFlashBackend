@@ -1,13 +1,14 @@
 {
-	"name": "sf_back_end",
+	"name": "skillflash_backend_api",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"main": "app.ts",
 	"scripts": {
 		"test": "jest",
-		"dev": "ts-node-dev src/listen.ts",
+		"start": "node dist/listen.js",
 		"lint": "eslint --ext .ts .",
-		"start": "nodemon --exec npx ts-node ./src/database/seeds/seed_test.ts"
+		"seed": "nodemon --exec npx ts-node ./src/database/seeds/seed_test.ts",
+		"build": "tsc"
 	},
 	"keywords": [],
 	"author": "",

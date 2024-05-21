@@ -177,7 +177,7 @@ describe("/api/users/login", () => {
 });
 
 describe("/api/users/:username", () => {
-	test.only("GET 200: responds with true of the existed username", () => {
+	test("GET 200: responds with true of the existed username", () => {
 		return request(app)
 			.get("/api/users/Brooke_Bradtke")
 			.expect(200)
@@ -185,7 +185,7 @@ describe("/api/users/:username", () => {
 				expect(exist).toBe(true);
 			});
 	});
-	test.only("GET 200: responds with false of the username does not exist", () => {
+	test("GET 200: responds with false of the username does not exist", () => {
 		return request(app)
 			.get("/api/users/notexistusername")
 			.expect(200)

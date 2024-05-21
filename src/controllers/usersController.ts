@@ -22,7 +22,6 @@ export async function getUserByUsername(
 ): Promise<void> {
 	try {
 		const { username } = req.params;
-		console.log(username);
 		const exist = await checkExistenceUser(username);
 		res.status(200).send({ exist });
 	} catch (err) {

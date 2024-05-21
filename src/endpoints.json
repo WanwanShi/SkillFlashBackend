@@ -42,5 +42,13 @@
 			"username": "test1",
 			"email": "test1@gmail.com"
 		}
+	},
+
+	"GET /api/users/:username": {
+		"description": "serves an boolean value of the existence of the username",
+		"query": [],
+		"exampleResponse": {
+			"exist": true
+		}
 	}
 }

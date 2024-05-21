@@ -10,19 +10,37 @@
 				{
 					"_id": "664b46f82c0e05e0e615dd9f",
 					"tagName": "JavaScript",
-					"tagCategory": "Technical Skills"
+					"tagCategory": "technical-skills"
 				},
 				{
 					"_id": "664b46f82c0e05e0e615dda0",
 					"tagName": "Python",
-					"tagCategory": "Technical Skills"
+					"tagCategory": "technical-skills"
 				},
 				{
 					"_id": "664b46f82c0e05e0e615ddd0",
 					"tagName": "Testing Techniques",
-					"tagCategory": "Practical Knowledge"
+					"tagCategory": "practical-knowledge"
 				}
 			]
+		}
+	},
+	"POST /api/users/signup": {
+		"description": "serves an newly created user object with username,email and userId.",
+		"query": [],
+		"exampleResponse": {
+			"_id": "664c54c9f9398e48bdfa372a",
+			"username": "test1",
+			"email": "test1@gmail.com"
+		}
+	},
+	"POST /api/users/login": {
+		"description": "serves an exist user object",
+		"query": [],
+		"exampleResponse": {
+			"_id": "664c54c9f9398e48bdfa372a",
+			"username": "test1",
+			"email": "test1@gmail.com"
 		}
 	}
 }

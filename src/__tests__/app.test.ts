@@ -49,6 +49,30 @@ describe("/api/tags", () => {
 				});
 			});
 	});
+
+	test("GET:200 responds with an array of tags object filter by tagCategory query", () => {
+		return request(app)
+			.get("/api/tags?tagCategory=technical-skills")
+			.expect(200)
+			.then(({ body: { tags } }) => {
+				expect(tags).toHaveLength(10);
+				tags.forEach((tag: object) => {
+					expect(tag).toMatchObject({
+						tagName: expect.any(String),
+						tagCategory: "technical-skills",
+					});
+				});
+			});
+	});
+
+	test("GET:400 responds with error message shows invalid query", () => {
+		return request(app)
+			.get("/api/tags?non_exist_Category=technical-skills")
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe("Invalid query");
+			});
+	});
 });
 
 describe("/api/users/signup", () => {
@@ -105,15 +129,70 @@ describe("/api/users/signup", () => {
 });
 
 describe("/api/users/login", () => {
-	test("POST:200 responds with exist user", () => {});
+	test("POST:200 responds with exist user", () => {
+		const loginUser = {
+			username: "Brooke_Bradtke",
+			password: "zUz_0n7yYXtr8pL",
+		};
+		return request(app)
+			.post("/api/users/login")
+			.send(loginUser)
+			.expect(200)
+			.then(({ body: { user } }) => {
+				expect(user).toMatchObject({
+					_id: expect.any(String),
+					username: "Brooke_Bradtke",
+					email: "Gregory.Muller@yahoo.com",
+				});
+			});
+	});
 
-	test("POST:404 responds with an error message when provided non-existent username", () => {});
+	test("POST:404 responds with an error message when provided non-existent username", () => {
+		const loginUser = {
+			username: "does_not_exist",
+			password: "zUz_0n7yYXtr8pL",
+		};
+		return request(app)
+			.post("/api/users/login")
+			.send(loginUser)
+			.expect(404)
+			.then(({ body: { message } }) => {
+				expect(message).toBe("username does not exist");
+			});
+	});
 
-	test("POST:404 responds with an error message whe provided incorrect password", () => {});
+	test("POST:400 responds with an error message whe provided incorrect password", () => {
+		const loginUser = {
+			username: "Brooke_Bradtke",
+			password: "zUz_0n7yYXtr8pLabd",
+		};
+		return request(app)
+			.post("/api/users/login")
+			.send(loginUser)
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe("username and password does not match");
+			});
+	});
 });
 
 describe("/api/users/:username", () => {
-	test("GET", () => {});
+	test.only("GET 200: responds with true of the existed username", () => {
+		return request(app)
+			.get("/api/users/Brooke_Bradtke")
+			.expect(200)
+			.then(({ body: { exist } }) => {
+				expect(exist).toBe(true);
+			});
+	});
+	test.only("GET 200: responds with false of the username does not exist", () => {
+		return request(app)
+			.get("/api/users/notexistusername")
+			.expect(200)
+			.then(({ body: { exist } }) => {
+				expect(exist).toBe(false);
+			});
+	});
 });
 
 describe("", () => {

@@ -1,5 +1,6 @@
 import { getDb } from "../database/connection";
 import bcrypt from "bcryptjs";
+import { User } from "../database/seeds/seed_test";
 import { ObjectId } from "mongodb";
 
 interface ReturnedUser {
@@ -7,10 +8,9 @@ interface ReturnedUser {
 	username: string;
 	email: string;
 }
-interface User {
-	_id?: ObjectId;
+
+interface LoginUser {
 	username: string;
-	email: string;
 	password: string;
 }
 
@@ -19,14 +19,14 @@ const toReturnedUser = (user: User): ReturnedUser => {
 	return { _id, username, email };
 };
 
-const getUserById = async (id: string): Promise<ReturnedUser | null> => {
-	const db = getDb();
-	const user = await db
-		.collection<User>("users")
-		.findOne({ _id: new ObjectId(id) });
-	if (!user) return null;
-	return toReturnedUser(user);
-};
+// const getUserById = async (id: string): Promise<ReturnedUser | null> => {
+// 	const db = getDb();
+// 	const user = await db.collection("users").findOne({ _id: new ObjectId(id) });
+// 	console.log(user);
+// 	if (!user) return null;
+
+// 	return toReturnedUser(user);
+// };
 
 const createUser = async (user: User): Promise<ReturnedUser> => {
 	const { username, email, password } = user;
@@ -36,6 +36,7 @@ const createUser = async (user: User): Promise<ReturnedUser> => {
 	if (!username || !email || !password) {
 		return Promise.reject({ status: 400, message: "failed to signup" });
 	}
+
 	if (
 		username.length <= 3 ||
 		!emailRegex.test(email) ||
@@ -47,11 +48,15 @@ const createUser = async (user: User): Promise<ReturnedUser> => {
 	const hashedPw = await bcrypt.hash(user.password, 10);
 	user.password = hashedPw;
 	const result = await db.collection<User>("users").insertOne(user);
-	const newUser = await getUserById(result.insertedId.toHexString());
-	if (!newUser) {
-		return Promise.reject({ status: 400, message: "failed to signup" });
+	if (result) {
+		const signupUser: ReturnedUser | false = await fetchUserByUsername(
+			username
+		);
+		if (signupUser) {
+			return signupUser;
+		}
 	}
-	return newUser;
+	return Promise.reject({ status: 400, message: "failed to signup" });
 };
 
 const fetchUserByUsername = async (username: string) => {
@@ -60,4 +65,37 @@ const fetchUserByUsername = async (username: string) => {
 	if (!user) return false;
 	return toReturnedUser(user);
 };
-export { getUserById, createUser, User, ReturnedUser, fetchUserByUsername };
+
+const authUser = async (loginUser: LoginUser) => {
+	const { username, password } = loginUser;
+	const db = getDb();
+	const user = await db
+		.collection<User>("users")
+		.findOne({ username: username });
+
+	if (!user) {
+		return Promise.reject({ status: 404, message: "username does not exist" });
+	}
+
+	const isMatch = await bcrypt.compare(password, user.password);
+	if (!isMatch) {
+		return Promise.reject({
+			status: 400,
+			message: "username and password does not match",
+		});
+	}
+	return toReturnedUser(user);
+};
+const checkExistenceUser = async (username: string) => {
+	const db = getDb();
+	const user = await db.collection<User>("users").findOne({ username });
+	if (user) return true;
+	return false;
+};
+export {
+	createUser,
+	ReturnedUser,
+	fetchUserByUsername,
+	authUser,
+	checkExistenceUser,
+};

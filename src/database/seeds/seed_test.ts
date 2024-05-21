@@ -1,9 +1,10 @@
-import { Collection } from "mongodb";
+import { Collection, ObjectId } from "mongodb";
 import { seedHasher } from "../data/test_data/users";
 import { connectDB, getDb } from "../connection";
 import tags from "../data/test_data/tags";
 
 export interface User {
+	_id?: ObjectId;
 	username: string;
 	email: string;
 	password: string;
@@ -14,6 +15,7 @@ export interface Tag {
 }
 
 export const seedDB = async (): Promise<void> => {
+	await connectDB();
 	const db = getDb();
 	const userCollection: Collection<User> = db.collection("users");
 	const tagsCollection: Collection<Tag> = db.collection("tags");
@@ -21,7 +23,6 @@ export const seedDB = async (): Promise<void> => {
 	const tags_test: Tag[] = tags;
 
 	try {
-		await connectDB();
 		await userCollection.deleteMany({});
 		await tagsCollection.deleteMany({});
 		await userCollection.insertMany(hashedSeed);
@@ -31,3 +32,4 @@ export const seedDB = async (): Promise<void> => {
 	} finally {
 	}
 };
+seedDB();

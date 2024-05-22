@@ -3,6 +3,7 @@ import { app } from "../app";
 import { connectDB, disconnectDB } from "../database/connection";
 import { seedDB } from "../database/seeds/seed_test";
 import endpoints from "../endpoints.json";
+import { Deck } from "../utils/AIDataFormatter";
 
 beforeEach(async () => {
 	await connectDB();
@@ -132,7 +133,7 @@ describe("/api/users/login", () => {
 	test("POST:200 responds with exist user", () => {
 		const loginUser = {
 			username: "Brooke_Bradtke",
-			password: "zUz_0n7yYXtr8pL",
+			password: "zUz_0n7y.123YXtr8pL",
 		};
 		return request(app)
 			.post("/api/users/login")
@@ -195,8 +196,49 @@ describe("/api/users/:username", () => {
 	});
 });
 
-describe("", () => {
-	test("", () => {});
+describe("/api/decks/:username", () => {
+	test("GET:200 responds with array of deck objects based on username", () => {
+		return request(app).get("/api/decks/kooooo").expect(200)
+			.then(({body: { decks }})=>{
+				expect(decks).toHaveLength(5);
+				decks.forEach((deck:Deck)=>{
+					expect(deck).toMatchObject({
+						_id: expect.any(String),
+						deckName: expect.any(String),
+                        username: "kooooo",
+                        tags: expect.any(Array),
+                        chatHistory: expect.any(Array),
+                        cards: expect.any(Array),
+					})
+				})
+			})
+	});
+
+	test("GET:200 responds with empty array when provided user has no decks", () => {
+		return request(app).get("/api/decks/Brooke_Bradtke").expect(200)
+			.then(({body: { decks }})=>{
+				expect(Array.isArray(decks)).toBe(true);
+				expect(decks).toHaveLength(0);
+			})
+	});
+
+	test("GET:404 responds with an error message when provided non-existent username", ()=>{
+		return request(app)
+            .get("/api/decks/someUser")
+            .expect(404)
+            .then(({ body: { message } }) => {
+                expect(message).toBe("username does not exist");
+            });
+	})
+
+	test("GET:400 responds with an error message when provided empty  username", ()=>{
+		return request(app)
+            .get("/api/decks/''")
+            .expect(400)
+            .then(({ body: { message } }) => {
+                expect(message).toBe("no username provided");
+            });
+	})
 });
 
 describe("", () => {

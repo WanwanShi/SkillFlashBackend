@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 export interface Card {
 	Q: string;
 	A: string;
@@ -8,8 +10,9 @@ export interface Card {
 }
 
 export interface Deck {
+	_id?: ObjectId;
 	deckName: string;
-	userId: string;
+	username: string;
 	tags: string[];
 	chatHistory: object[];
 	cards: Card[];
@@ -26,9 +29,9 @@ const summariseTags = (deck: Card[]) => {
 	return [...new Set(deck.map((card) => card.tag))].sort();
 };
 
-export const deckFormat = (deckName: string, deck: Card[], userId: string) => {
+export const deckFormat = (deckName: string, deck: Card[], username: string) => {
 	const newDeck: Deck = {
-		userId: userId,
+		username: username,
 		deckName: deckName,
 		tags: summariseTags(deck),
 		cards: cardFormat(deck),

@@ -5,7 +5,7 @@ import { seedDB } from "../database/seeds/seed_test";
 import endpoints from "../endpoints.json";
 import { Deck } from "../utils/AIDataFormatter";
 import { deck6 } from "../database/data/test_data/decks_data/06deck";
-
+import { deck11 } from "../database/data/test_data/decks_data/11deck3BadCards";
 
 beforeEach(async () => {
 	await connectDB();
@@ -295,12 +295,53 @@ describe("POST /api/decks/:username", () => {
 			.post('/api/decks/kooooo')
 			.send({
 				deckName: 'deck6',
-				cards: [{ name: 'cats'}]
+				cards: [{ name: 'cats' }]
 			})
 			.expect(400)
 			.then(({ body: { message } }) => {
 				expect(message).toBe('malformed request body');
 			})
 	})
+
+	test('POST: 400 responds with not enough passing cards if >2 cards in generated deck does not meet requirements', () => {
+		return request(app)
+			.post('/api/decks/kooooo')
+			.send({
+				deckName: 'deck10',
+				cards: deck11
+			})
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('not enough passing cards');
+			})
+
+	})
 });
 
+// describe("PATCH /api/decks/:deck_id", () => {
+// 	test.only('PATCH 204 /api/decks/:deck_id', () => {
+// 		return request(app)
+// 			.patch('/api/decks/664e21109425c7ba3ae7fa85')
+// 			.send({
+// 				deckName: 'deck2',
+// 				tags: ["Angular"
+// 					,
+// 					"javascript"
+// 					,
+// 					"nodejs"
+// 					,
+// 					"supabase"
+// 					,
+// 					"vue"],
+// 				chatHistory: ["content"],
+// 				cards: [],
+// 			})
+// 			.expect(204)
+// 			.then(({ body: { message } }) => {
+// 				expect(message).toBe('deck updated');
+
+// 			})
+// 	})
+
+// })
+// Not able to test PATCH due to db reseeding and therefore deck_id changes every time, any ideas?

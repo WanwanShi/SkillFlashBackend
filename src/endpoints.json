@@ -4,7 +4,9 @@
 	},
 	"GET /api/tags": {
 		"description": "serves an array of all tags",
-		"query": ["tagCategory"],
+		"query": [
+			"tagCategory"
+		],
 		"exampleResponse": {
 			"tags": [
 				{
@@ -25,7 +27,11 @@
 			]
 		},
 		"errorResponse": [
-			{"GET 400": {"message": "Invalid query"}}
+			{
+				"GET 400": {
+					"message": "Invalid query"
+				}
+			}
 		]
 	},
 	"POST /api/users/signup": {
@@ -37,7 +43,11 @@
 			"email": "test1@gmail.com"
 		},
 		"errorResponse": [
-			{"POST 400": {"message": "failed to signup"}}
+			{
+				"POST 400": {
+					"message": "failed to signup"
+				}
+			}
 		]
 	},
 	"POST /api/users/login": {
@@ -49,8 +59,16 @@
 			"email": "test1@gmail.com"
 		},
 		"errorResponse": [
-			{"POST 404": {"message": "username does not exist"}},
-			{"POST 400": {"message": "username and password does not match"}}
+			{
+				"POST 404": {
+					"message": "username does not exist"
+				}
+			},
+			{
+				"POST 400": {
+					"message": "username and password does not match"
+				}
+			}
 		]
 	},
 	"GET /api/users/:username": {
@@ -62,30 +80,127 @@
 	},
 	"GET /api/decks/:username": {
 		"description": "serves an array of decks for specific user",
-        "query": [],
-        "exampleResponse": {
-            "decks": [
-                {
+		"query": [],
+		"exampleResponse": {
+			"decks": [
+				{
 					"card_id": 1,
 					"Q": "How does Django REST Framework handle authentication and permissions?",
 					"A": "Django REST Framework offers a flexible authentication system that integrates with various authentication backends, including tokens, sessions, and OAuth. It also provides fine-grained permission controls, allowing developers to restrict access to specific views or functionality. (Source: Django REST Framework Authentication Documentation)",
 					"tag": "python",
 					"Y": 0,
 					"N": 0
-				  },
-				  {
+				},
+				{
 					"card_id": 2,
 					"Q": "What is type hinting in Python, and how does it improve code quality?",
 					"A": "Type hinting in Python involves adding annotations to variables and function arguments to specify their expected types. This improves code quality by enabling static type checking, providing better documentation, and facilitating IDE auto-completion and refactoring. (Source: Python Type Hinting Documentation)",
 					"tag": "python",
 					"Y": 0,
 					"N": 0
-				  }
-            ]
-        },
-        "errorResponse": [
-            {"GET 404": {"message": "username does not exist"}},
-			{"GET 400": {"message": "no username provided"}}
-        ]
+				}
+			]
+		},
+		"errorResponse": [
+			{
+				"GET 404": {
+					"message": "username does not exist"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "no username provided"
+				}
+			}
+		]
+	},
+	"POST /api/decks/:username": {
+		"description": "posts a deck to decks for specific user, returns posted deck",
+		"query": [],
+		"exampleResponse": {
+			"_id": "664e24d92a39772d1e86e942",
+			"deckName": "deck7",
+			"username": "kooooo",
+			"tags": [
+				"Angular",
+				"javascript",
+				"nodejs",
+				"supabase",
+				"vue"
+			],
+			"chatHistory": [],
+			"cards": []
+		},
+		"errorResponse": [
+			{
+				"GET 404": {
+					"message": "username does not exist"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "no username provided"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "malformed request body"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "not enough passing cards"
+				}
+			}
+		]
+	},
+	"PATCH /api/decks/:deck_id": {
+		"description": "patches properties of deck in decks for specific deck_id, returns patched deck",
+		"query": [],
+		"exampleResponse": {
+			"deckName": "deck2",
+			"tags": [
+				"react",
+				"vue",
+				"supabase",
+				"postgresql"
+			],
+			"chatHistory": [],
+			"cards": [
+				{
+					"card_id": 1,
+					"Q": "How does Django REST Framework handle authentication and permissions?",
+					"A": "Django REST Framework offers a flexible authentication system that integrates with various authentication backends, including tokens, sessions, and OAuth. It also provides fine-grained permission controls, allowing developers to restrict access to specific views or functionality. (Source: Django REST Framework Authentication Documentation)",
+					"tag": "python",
+					"Y": 0,
+					"N": 0
+				},
+				{
+					"card_id": 2,
+					"Q": "What is type hinting in Python, and how does it improve code quality?",
+					"A": "Type hinting in Python involves adding annotations to variables and function arguments to specify their expected types. This improves code quality by enabling static type checking, providing better documentation, and facilitating IDE auto-completion and refactoring. (Source: Python Type Hinting Documentation)",
+					"tag": "python",
+					"Y": 0,
+					"N": 0
+				}
+			]
+		},
+		"errorResponse": [
+			{
+				"GET 404": {
+					"message": "deck not found"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "bad deck_id"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "bad or empty request body"
+				}
+			}
+		]
 	}
 }

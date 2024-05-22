@@ -265,6 +265,18 @@ describe("POST /api/decks/:username", () => {
 				})
 			})
 	});
+	test("POST:404 responds with not found error if username does not exist ", () => {
+		return request(app)
+			.post('/api/decks/koooo0o')
+			.send({
+				deckName: 'deck6',
+				cards: deck6
+			})
+			.expect(404)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('username does not exist');
+			})
+	})
 
 	test("POST:400 responds with bad body error if req body is malformed (deckName)", () => {
 		return request(app)

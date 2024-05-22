@@ -15,10 +15,10 @@ export async function fetchDecksByUsername(username: string) {
 
 export async function postDeck(username: string, deckName: string, cards: Card[]) {
     const db = getDb()
+    if (! await checkExistenceUser(username)) return Promise.reject({ status: 404, message: "username does not exist" });
 
     if (!deckName || !cards || !username) return Promise.reject({ status: 400, message: "malformed request body" });
 
-    if (! await checkExistenceUser(username)) return Promise.reject({ status: 404, message: "username does not exist" });
 
     if (username.length < 3) return Promise.reject({ status: 400, message: "no username provided" });
 

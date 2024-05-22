@@ -1,6 +1,9 @@
 import { getDb } from "../database/connection"
 import { checkExistenceUser } from "./usersModel";
 import { Card, deckFormat } from "../utils/AIDataFormatter";
+import { ObjectId } from "mongodb";
+
+
 
 export async function fetchDecksByUsername(username: string) {
     const db = getDb();
@@ -25,8 +28,8 @@ export async function postDeck(username: string, deckName: string, cards: Card[]
         return mustHaveKeys.every((key) => keyArr.includes(key))
 
     })
-    
-    if(!filteredCards.length){
+
+    if (!filteredCards.length) {
         return Promise.reject({ status: 400, message: "malformed request body" })
     }
     if (cards.length - filteredCards.length > 2) {
@@ -37,4 +40,22 @@ export async function postDeck(username: string, deckName: string, cards: Card[]
     const newDeck = deckFormat(deckName, cards, username)
     await db.collection('decks').insertOne(newDeck)
     return await db.collection('decks').findOne({ deckName })
+}
+
+export async function patchDeck(deck_id: string, deckName: string, cards: Card[], chatHistory: string[], tags: string[]) {
+    const db = getDb();
+    const objectId = new ObjectId(deck_id);
+    console.log(objectId, typeof objectId)
+    const deck = await db.collection('decks').findOne({ _id: objectId })
+    console.log('deck -->', deck);
+
+    if (!deck) return Promise.reject({ status: 404, message: "deck not found" });
+
+    const newDeck = structuredClone(deck);
+    if (deckName) newDeck.deckName = deckName;
+    if (cards) newDeck.cards = cards;
+    if (chatHistory) newDeck.chatHistory = chatHistory;
+    if (tags) newDeck.tags = tags;
+
+    return await db.collection('decks').updateOne({ _id: objectId }, { $set: newDeck });
 }

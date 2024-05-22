@@ -25,8 +25,8 @@ export function updateDeck(req: express.Request, res: express.Response, next: ex
     const {deckName, cards, chatHistory, tags} = req.body;
     console.log('deck id (string) -->',deck_id)
     patchDeck(deck_id, deckName, cards, chatHistory, tags)
-    .then(() => {
-        res.status(204).send()
+    .then((result) => {
+        res.status(204).send(result)
     })
     .catch(next)
 }

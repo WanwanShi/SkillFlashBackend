@@ -5,6 +5,7 @@ import { seedDB } from "../database/seeds/seed_test";
 import endpoints from "../endpoints.json";
 import { Deck } from "../utils/AIDataFormatter";
 import { deck6 } from "../database/data/test_data/decks_data/06deck";
+import { deck7 } from "../database/data/test_data/decks_data/07deck";
 import { deck11 } from "../database/data/test_data/decks_data/11deck3BadCards";
 
 beforeEach(async () => {
@@ -202,7 +203,7 @@ describe("GET /api/decks/:username", () => {
 	test("GET:200 responds with array of deck objects based on username", () => {
 		return request(app).get("/api/decks/kooooo").expect(200)
 			.then(({ body: { decks } }) => {
-				expect(decks).toHaveLength(5);
+				expect(decks).toHaveLength(6);
 				decks.forEach((deck: Deck) => {
 					expect(deck).toMatchObject({
 						_id: expect.any(String),
@@ -249,14 +250,14 @@ describe("POST /api/decks/:username", () => {
 		return request(app)
 			.post('/api/decks/kooooo')
 			.send({
-				deckName: 'deck6',
-				cards: deck6
+				deckName: 'deck7',
+				cards: deck7
 			})
 			.expect(201)
 			.then(({ body: { deck } }) => {
 				expect(deck).toMatchObject({
 					_id: expect.any(String),
-					deckName: 'deck6',
+					deckName: 'deck7',
 					username: "kooooo",
 					tags: expect.any(Array),
 					chatHistory: expect.any(Array),
@@ -318,30 +319,30 @@ describe("POST /api/decks/:username", () => {
 	})
 });
 
-// describe("PATCH /api/decks/:deck_id", () => {
-// 	test.only('PATCH 204 /api/decks/:deck_id', () => {
-// 		return request(app)
-// 			.patch('/api/decks/664e21109425c7ba3ae7fa85')
-// 			.send({
-// 				deckName: 'deck2',
-// 				tags: ["Angular"
-// 					,
-// 					"javascript"
-// 					,
-// 					"nodejs"
-// 					,
-// 					"supabase"
-// 					,
-// 					"vue"],
-// 				chatHistory: ["content"],
-// 				cards: [],
-// 			})
-// 			.expect(204)
-// 			.then(({ body: { message } }) => {
-// 				expect(message).toBe('deck updated');
+describe("PATCH /api/decks/:deck_id", () => {
+	test('PATCH 204 /api/decks/:deck_id', () => {
+		return request(app)
+			.patch('/api/decks/664e21109425c7ba3ae7fa85')
+			.send({
+				deckName: 'deck2',
+				tags: ["Angular"
+					,
+					"javascript"
+					,
+					"nodejs"
+					,
+					"supabase"
+					,
+					"vue"],
+				chatHistory: ["content"],
+				cards: [],
+			})
+			.expect(204)
+			.then(({text}) => {
+				expect(text.length).toBe(0);
+				//^ sends back empty string because 204 means no content
 
-// 			})
-// 	})
+			})
+	})
 
-// })
-// Not able to test PATCH due to db reseeding and therefore deck_id changes every time, any ideas?
+})

@@ -51,11 +51,12 @@ export async function patchDeck(deck_id: string, deckName: string, cards: Card[]
 
     if (!deck) return Promise.reject({ status: 404, message: "deck not found" });
 
-    const newDeck = structuredClone(deck);
-    if (deckName) newDeck.deckName = deckName;
-    if (cards) newDeck.cards = cards;
-    if (chatHistory) newDeck.chatHistory = chatHistory;
-    if (tags) newDeck.tags = tags;
+    // const newDeck = structuredClone(deck);
+    if (deckName)deck.deckName = deckName;
+    if (cards)deck.cards = cards;
+    if (chatHistory)deck.chatHistory = chatHistory;
+    if (tags)deck.tags = tags;
+    console.log('newDeck -->',deck);
 
-    return await db.collection('decks').updateOne({ _id: objectId }, { $set: newDeck });
+    return await db.collection('decks').updateOne({ _id: objectId }, { $set: deck });
 }

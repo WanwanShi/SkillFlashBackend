@@ -1,3 +1,4 @@
+//This deck contains 3 bad cards and will be rejected by decks model
 export const deck11 = [
   {
     "Q": "What is Pair Programming, and what benefits does it offer? ",

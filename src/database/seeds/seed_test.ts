@@ -28,7 +28,6 @@ export const seedDB = async (): Promise<void> => {
 	patch_Deck._id = new ObjectId('664e21109425c7ba3ae7fa85');
 	const deck_test: Deck = patch_Deck;
 
-	console.log('patch_Deck -->', deck_test)
 
 
 	try {

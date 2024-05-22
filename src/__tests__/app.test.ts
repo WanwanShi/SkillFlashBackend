@@ -320,7 +320,7 @@ describe("POST /api/decks/:username", () => {
 });
 
 describe("PATCH /api/decks/:deck_id", () => {
-	test('PATCH 204 /api/decks/:deck_id', () => {
+	test('PATCH 204 /api/decks/<valid deck_id> - returns 204 - no content', () => {
 		return request(app)
 			.patch('/api/decks/664e21109425c7ba3ae7fa85')
 			.send({
@@ -338,10 +338,88 @@ describe("PATCH /api/decks/:deck_id", () => {
 				cards: [],
 			})
 			.expect(204)
-			.then(({text}) => {
+			.then(({ text }) => {
 				expect(text.length).toBe(0);
 				//^ sends back empty string because 204 means no content
 
+			})
+	})
+	test('PATCH 404 /api/decks/ - returns 404 when deck with that id is not found', () => {
+		return request(app)
+			.patch('/api/decks/664e24d92a39772d1e86e942')
+			.send({
+				deckName: 'deck2',
+				tags: ["Angular"
+					,
+					"javascript"
+					,
+					"nodejs"
+					,
+					"supabase"
+					,
+					"vue"],
+				chatHistory: ["content"],
+				cards: [],
+			})
+			.expect(404)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('deck not found');
+			})
+	})
+
+	test('PATCH 400 /api/decks/ - returns 400 when deck_id is invalid', () => {
+		return request(app)
+			.patch('/api/decks/123456')
+			.send({
+				deckName: 'deck2',
+				tags: ["Angular"
+					,
+					"javascript"
+					,
+					"nodejs"
+					,
+					"supabase"
+					,
+					"vue"],
+				chatHistory: ["content"],
+				cards: [],
+			})
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('bad deck_id');
+			})
+	})
+	test('PATCH 400 /api/decks/ - returns 400 when request body is malformed', () => {
+		return request(app)
+			.patch('/api/decks/664e21109425c7ba3ae7fa85')
+			.send({
+				deckName: 'deck2',
+				tags: {
+					tag: ["Angular"
+						,
+						"javascript"
+						,
+						"nodejs"
+						,
+						"supabase"
+						,
+						"vue"]
+				},
+				chatHistory: ["content"],
+				cards: [],
+			})
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('bad or empty request body');
+			})
+	})
+	test('PATCH 400 /api/decks/ - returns 400 when request body is missing', () => {
+		return request(app)
+			.patch('/api/decks/664e21109425c7ba3ae7fa85')
+			.send()
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('bad or empty request body');
 			})
 	})
 

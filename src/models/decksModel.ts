@@ -2,6 +2,7 @@ import { getDb } from "../database/connection"
 import { checkExistenceUser } from "./usersModel";
 import { Card, deckFormat } from "../utils/AIDataFormatter";
 import { ObjectId } from "mongodb";
+import { isValidObjectId } from "mongoose";
 
 
 
@@ -44,19 +45,19 @@ export async function postDeck(username: string, deckName: string, cards: Card[]
 
 export async function patchDeck(deck_id: string, deckName: string, cards: Card[], chatHistory: string[], tags: string[]) {
     const db = getDb();
+    if (!isValidObjectId(deck_id)) return Promise.reject({ status: 400, message: "bad deck_id" });
     const objectId = new ObjectId(deck_id);
-    console.log(objectId, typeof objectId)
     const deck = await db.collection('decks').findOne({ _id: objectId })
-    console.log('deck -->', deck);
+
+
+
 
     if (!deck) return Promise.reject({ status: 404, message: "deck not found" });
-
-    // const newDeck = structuredClone(deck);
-    if (deckName)deck.deckName = deckName;
-    if (cards)deck.cards = cards;
-    if (chatHistory)deck.chatHistory = chatHistory;
-    if (tags)deck.tags = tags;
-    console.log('newDeck -->',deck);
+    if (deckName && typeof deckName === 'string') deck.deckName = deckName;
+    if (cards && Array.isArray(cards)) deck.cards = cards;
+    if (chatHistory && Array.isArray(chatHistory)) deck.chatHistory = chatHistory;
+    if (tags && Array.isArray(tags)) deck.tags = tags;
+    else { return Promise.reject({ status: 400, message: 'bad or empty request body' }) }
 
     return await db.collection('decks').updateOne({ _id: objectId }, { $set: deck });
 }

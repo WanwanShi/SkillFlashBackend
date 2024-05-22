@@ -1,5 +1,5 @@
 import express from "express";
-import { fetchDecksByUsername, postDeck , patchDeck} from "../models/decksModels";
+import { fetchDecksByUsername, postDeck , patchDeck} from "../models/decksModel";
 
 export function getDecksByUsername(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { username } = req.params;
@@ -23,7 +23,6 @@ export function addNewDeck(req: express.Request, res: express.Response, next: ex
 export function updateDeck(req: express.Request, res: express.Response, next: express.NextFunction){
     const {deck_id} = req.params;
     const {deckName, cards, chatHistory, tags} = req.body;
-    console.log('deck id (string) -->',deck_id)
     patchDeck(deck_id, deckName, cards, chatHistory, tags)
     .then((result) => {
         res.status(204).send(result)

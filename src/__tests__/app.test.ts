@@ -132,10 +132,10 @@ describe("/api/users/signup", () => {
 });
 
 describe("/api/users/login", () => {
-	test("POST:200 responds with exist user", () => {
+	test("POST:200 responds with existing user object", () => {
 		const loginUser = {
 			username: "Brooke_Bradtke",
-			password: "zUz_0n7y.123YXtr8pL",
+			password: "zUz_0n7y!123YXtr8pL",
 		};
 		return request(app)
 			.post("/api/users/login")
@@ -264,4 +264,43 @@ describe("POST /api/decks/:username", () => {
 				})
 			})
 	});
+
+	test("POST:400 responds with bad body error if req body is malformed (deckName)", () => {
+		return request(app)
+			.post('/api/decks/kooooo')
+			.send({
+				deckNome: 'deck6',
+				cards: deck6
+			})
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('malformed request body');
+			})
+	})
+
+	test("POST:400 responds with bad body error if req body is malformed (cards)", () => {
+		return request(app)
+			.post('/api/decks/kooooo')
+			.send({
+				deckName: 'deck6',
+				cds: deck6
+			})
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('malformed request body');
+			})
+	})
+	test("POST:400 responds with bad body error if DECK is malformed (cards>deck)", () => {
+		return request(app)
+			.post('/api/decks/kooooo')
+			.send({
+				deckName: 'deck6',
+				cards: [{ name: 'cats'}]
+			})
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('malformed request body');
+			})
+	})
 });
+

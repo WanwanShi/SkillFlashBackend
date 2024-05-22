@@ -38,11 +38,15 @@ const createUser = async (user: User): Promise<ReturnedUser> => {
 	}
 
 	if (
-		username.length <= 3 ||
+		username.length < 3 ||
 		!emailRegex.test(email) ||
 		!passRegex.test(password)
 	) {
 		return Promise.reject({ status: 400, message: "failed to signup" });
+	}
+	const exist = await checkExistenceUser(username);
+	if (exist) {
+		return Promise.reject({ status: 400, message: "username already exist" });
 	}
 	const db = getDb();
 	const hashedPw = await bcrypt.hash(user.password, 10);
@@ -72,11 +76,9 @@ const authUser = async (loginUser: LoginUser) => {
 	const user = await db
 		.collection<User>("users")
 		.findOne({ username: username });
-
 	if (!user) {
 		return Promise.reject({ status: 404, message: "username does not exist" });
 	}
-
 	const isMatch = await bcrypt.compare(password, user.password);
 	if (!isMatch) {
 		return Promise.reject({

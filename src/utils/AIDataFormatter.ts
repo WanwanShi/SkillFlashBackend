@@ -1,5 +1,3 @@
-import { newDecks } from "../database/data/test_data/decks_data/";
-
 export interface Card {
 	Q: string;
 	A: string;

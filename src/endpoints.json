@@ -29,7 +29,7 @@
 		]
 	},
 	"POST /api/users/signup": {
-		"description": "serves an newly created user object with username,email and userId.",
+		"description": "serves a newly created user object with username,email and userId.",
 		"query": [],
 		"exampleResponse": {
 			"_id": "664c54c9f9398e48bdfa372a",
@@ -54,10 +54,38 @@
 		]
 	},
 	"GET /api/users/:username": {
-		"description": "serves an boolean value of the existence of the username",
+		"description": "serves a boolean value of the existence of the username",
 		"query": [],
 		"exampleResponse": {
 			"exist": true
 		}
+	},
+	"GET /api/decks/:username": {
+		"description": "serves an array of decks for specific user",
+        "query": [],
+        "exampleResponse": {
+            "decks": [
+                {
+					"card_id": 1,
+					"Q": "How does Django REST Framework handle authentication and permissions?",
+					"A": "Django REST Framework offers a flexible authentication system that integrates with various authentication backends, including tokens, sessions, and OAuth. It also provides fine-grained permission controls, allowing developers to restrict access to specific views or functionality. (Source: Django REST Framework Authentication Documentation)",
+					"tag": "python",
+					"Y": 0,
+					"N": 0
+				  },
+				  {
+					"card_id": 2,
+					"Q": "What is type hinting in Python, and how does it improve code quality?",
+					"A": "Type hinting in Python involves adding annotations to variables and function arguments to specify their expected types. This improves code quality by enabling static type checking, providing better documentation, and facilitating IDE auto-completion and refactoring. (Source: Python Type Hinting Documentation)",
+					"tag": "python",
+					"Y": 0,
+					"N": 0
+				  }
+            ]
+        },
+        "errorResponse": [
+            {"GET 404": {"message": "username does not exist"}},
+			{"GET 400": {"message": "no username provided"}}
+        ]
 	}
 }

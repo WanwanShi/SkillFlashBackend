@@ -5,7 +5,6 @@ export function getDecksByUsername(req: express.Request, res: express.Response, 
     const { username } = req.params;
     fetchDecksByUsername(username)
         .then((decks) => {
-            console.log(decks);
             res.status(200).send({ decks });
         })
         .catch(next)

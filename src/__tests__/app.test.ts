@@ -3,6 +3,9 @@ import { app } from "../app";
 import { connectDB, disconnectDB } from "../database/connection";
 import { seedDB } from "../database/seeds/seed_test";
 import endpoints from "../endpoints.json";
+import { Deck } from "../utils/AIDataFormatter";
+import { deck6 } from "../database/data/test_data/decks_data/06deck";
+
 
 beforeEach(async () => {
 	await connectDB();
@@ -129,10 +132,10 @@ describe("/api/users/signup", () => {
 });
 
 describe("/api/users/login", () => {
-	test("POST:200 responds with exist user", () => {
+	test("POST:200 responds with existing user object", () => {
 		const loginUser = {
 			username: "Brooke_Bradtke",
-			password: "zUz_0n7yYXtr8pL",
+			password: "zUz_0n7y!123YXtr8pL",
 		};
 		return request(app)
 			.post("/api/users/login")
@@ -195,10 +198,109 @@ describe("/api/users/:username", () => {
 	});
 });
 
-describe("", () => {
-	test("", () => {});
+describe("GET /api/decks/:username", () => {
+	test("GET:200 responds with array of deck objects based on username", () => {
+		return request(app).get("/api/decks/kooooo").expect(200)
+			.then(({ body: { decks } }) => {
+				expect(decks).toHaveLength(5);
+				decks.forEach((deck: Deck) => {
+					expect(deck).toMatchObject({
+						_id: expect.any(String),
+						deckName: expect.any(String),
+						username: "kooooo",
+						tags: expect.any(Array),
+						chatHistory: expect.any(Array),
+						cards: expect.any(Array),
+					})
+				})
+			})
+	});
+
+	test("GET:200 responds with empty array when provided user has no decks", () => {
+		return request(app).get("/api/decks/Brooke_Bradtke").expect(200)
+			.then(({ body: { decks } }) => {
+				expect(Array.isArray(decks)).toBe(true);
+				expect(decks).toHaveLength(0);
+			})
+	});
+
+	test("GET:404 responds with an error message when provided non-existent username", () => {
+		return request(app)
+			.get("/api/decks/someUser")
+			.expect(404)
+			.then(({ body: { message } }) => {
+				expect(message).toBe("username does not exist");
+			});
+	})
+
+	test("GET:400 responds with an error message when provided empty  username", () => {
+		return request(app)
+			.get("/api/decks/''")
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe("no username provided");
+			});
+	})
+
 });
 
-describe("", () => {
-	test("", () => {});
+describe("POST /api/decks/:username", () => {
+	test("POST:201 responds with posted deck object in decks collection", () => {
+		return request(app)
+			.post('/api/decks/kooooo')
+			.send({
+				deckName: 'deck6',
+				cards: deck6
+			})
+			.expect(201)
+			.then(({ body: { deck } }) => {
+				expect(deck).toMatchObject({
+					_id: expect.any(String),
+					deckName: 'deck6',
+					username: "kooooo",
+					tags: expect.any(Array),
+					chatHistory: expect.any(Array),
+					cards: expect.any(Array),
+				})
+			})
+	});
+
+	test("POST:400 responds with bad body error if req body is malformed (deckName)", () => {
+		return request(app)
+			.post('/api/decks/kooooo')
+			.send({
+				deckNome: 'deck6',
+				cards: deck6
+			})
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('malformed request body');
+			})
+	})
+
+	test("POST:400 responds with bad body error if req body is malformed (cards)", () => {
+		return request(app)
+			.post('/api/decks/kooooo')
+			.send({
+				deckName: 'deck6',
+				cds: deck6
+			})
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('malformed request body');
+			})
+	})
+	test("POST:400 responds with bad body error if DECK is malformed (cards>deck)", () => {
+		return request(app)
+			.post('/api/decks/kooooo')
+			.send({
+				deckName: 'deck6',
+				cards: [{ name: 'cats'}]
+			})
+			.expect(400)
+			.then(({ body: { message } }) => {
+				expect(message).toBe('malformed request body');
+			})
+	})
 });
+

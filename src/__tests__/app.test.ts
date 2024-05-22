@@ -5,7 +5,7 @@ import { seedDB } from "../database/seeds/seed_test";
 import endpoints from "../endpoints.json";
 import { Deck } from "../utils/AIDataFormatter";
 import { deck6 } from "../database/data/test_data/decks_data/06deck";
-
+import { deck11 } from "../database/data/test_data/decks_data/11deck3BadCards";
 
 beforeEach(async () => {
 	await connectDB();
@@ -301,6 +301,20 @@ describe("POST /api/decks/:username", () => {
 			.then(({ body: { message } }) => {
 				expect(message).toBe('malformed request body');
 			})
+	})
+
+	test('POST: 400 responds with not enough passing cards if >2 cards in generated deck does not meet requirements', () => {
+		return request(app)
+		.post('/api/decks/kooooo')
+		.send({
+			deckName:'deck10',
+			cards: deck11
+		})
+		.expect(400)
+		.then(({ body: { message } }) => {
+            expect(message).toBe('not enough passing cards');
+        })
+
 	})
 });
 

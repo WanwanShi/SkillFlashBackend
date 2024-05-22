@@ -5,7 +5,7 @@ const seedData: User[] = [
 	{
 		username: "kooooo",
 		email: "kooooo@yahoo.com",
-		password: "UJkabcdh!123DimB",
+		password: "Password!23",
 	},
 	{
 		username: "Christophe10",

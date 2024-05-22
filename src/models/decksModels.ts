@@ -11,19 +11,28 @@ export async function fetchDecksByUsername(username: string) {
 
 export async function postDeck(username: string, deckName: string, cards: Card[]) {
     const db = getDb()
-    
+
     if (!deckName || !cards || !username) return Promise.reject({ status: 400, message: "malformed request body" });
-    
+
     if (! await checkExistenceUser(username)) return Promise.reject({ status: 404, message: "username does not exist" });
 
     if (username.length < 3) return Promise.reject({ status: 400, message: "no username provided" });
 
-    for (const card of cards) {
-        if (!card.Q || !card.A || !card.tag || card.Y || card.N) { return Promise.reject({ status: 400, message: "malformed request body" }) }
 
+    const filteredCards = cards.filter((card) => {
+        const keyArr = Object.keys(card)
+        const mustHaveKeys = ['Y', 'N', 'Q', 'A', 'tag']
+        return mustHaveKeys.every((key) => keyArr.includes(key))
+
+    })
+    
+    if(!filteredCards.length){
+        return Promise.reject({ status: 400, message: "malformed request body" })
+    }
+    if (cards.length - filteredCards.length > 2) {
+        return Promise.reject({ status: 400, message: "not enough passing cards" })
     }
 
-    // should we be filtering out cards which are not valid from decks or rejecting the whole deck?
 
     const newDeck = deckFormat(deckName, cards, username)
     await db.collection('decks').insertOne(newDeck)

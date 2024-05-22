@@ -52,6 +52,9 @@ const createUser = async (user: User): Promise<ReturnedUser> => {
 	const hashedPw = await bcrypt.hash(user.password, 10);
 	user.password = hashedPw;
 	const result = await db.collection<User>("users").insertOne(user);
+
+	
+
 	if (result) {
 		const signupUser: ReturnedUser | false = await fetchUserByUsername(
 			username

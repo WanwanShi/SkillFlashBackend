@@ -19,14 +19,6 @@ const toReturnedUser = (user: User): ReturnedUser => {
   return { _id, username, email };
 };
 
-// const getUserById = async (id: string): Promise<ReturnedUser | null> => {
-// 	const db = getDb();
-// 	const user = await db.collection("users").findOne({ _id: new ObjectId(id) });
-// 	console.log(user);
-// 	if (!user) return null;
-
-// 	return toReturnedUser(user);
-// };
 
 const createUser = async (user: User): Promise<ReturnedUser> => {
   const { username, email, password } = user;

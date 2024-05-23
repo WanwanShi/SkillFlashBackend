@@ -1,5 +1,5 @@
 import { getDb } from "../database/connection";
-import { checkExistenceUser } from "./usersModel";
+import { checkExistenceUser as checkUserExists } from "./usersModel";
 import { deckFormat } from "../utils/AIDataFormatter";
 import { ObjectId } from "mongodb";
 import { isValidObjectId } from "mongoose";
@@ -8,11 +8,15 @@ import { Card } from "../utils/cohere/utils";
 import { cohereRequestCards } from "../utils/cohere/utils";
 
 export async function fetchDecksByUsername(username: string) {
-  const db = getDb();
+
+
   if (username.length < 3)
     return Promise.reject({ status: 400, message: "no username provided" });
-  if (!(await checkExistenceUser(username)))
+
+  if (!(await checkUserExists(username)))
     return Promise.reject({ status: 404, message: "username does not exist" });
+
+  const db = getDb();
   return db.collection("decks").find({ username: username }).toArray();
 }
 
@@ -23,7 +27,7 @@ export async function postDeck(username: string, deckName: string, tags: []) {
       message: "Malformed request body",
     });
   const db = getDb();
-  if (!(await checkExistenceUser(username)))
+  if (!(await checkUserExists(username)))
     return Promise.reject({ status: 404, message: "Username does not exist" });
 
   const [newChatHistory, cards] = await cohereRequestCards(tags);
@@ -37,23 +41,18 @@ export async function postDeck(username: string, deckName: string, tags: []) {
   if (username.length < 3)
     return Promise.reject({ status: 400, message: "No username provided" });
 
-  const filteredCards = cards.filter((card: Card) => {
-    const keyArr = Object.keys(card);
-    const mustHaveKeys = ["Y", "N", "Q", "A", "tag"];
-    return mustHaveKeys.every((key) => keyArr.includes(key));
-  });
-
-  if (!filteredCards.length) {
-    return Promise.reject({ status: 400, message: "malformed request body" });
+  try {
+    const passingCards = await checkForEnoughPassingCards(cards);
+    const newDeck = deckFormat(deckName, passingCards, username, newChatHistory);
+    await db.collection("decks").insertOne(newDeck);
+    return await db.collection("decks").findOne({ deckName });
   }
-  if (cards.length - filteredCards.length > 2) {
-    return Promise.reject({ status: 400, message: "not enough passing cards" });
+  catch (error) {
+    return Promise.reject({
+      status: 400,
+      message: "Failed generating cards. Please try again.",
+    });
   }
-
-  const newDeck = deckFormat(deckName, filteredCards, username, newChatHistory);
-
-  await db.collection("decks").insertOne(newDeck);
-  return await db.collection("decks").findOne({ deckName });
 }
 
 export async function patchDeck(deck_id: string, deckName: string, tags: []) {
@@ -92,6 +91,8 @@ export async function patchDeck(deck_id: string, deckName: string, tags: []) {
 
 export async function deleteDeck(deck_id: string) {
   const db = getDb();
+
+  
   if (!isValidObjectId(deck_id)) {
     return Promise.reject({ status: 400, message: "Malformed request body" });
   }
@@ -105,4 +106,21 @@ export async function deleteDeck(deck_id: string) {
       message: "Deck not found",
     });
   return;
+}
+
+
+async function checkForEnoughPassingCards(cards: []) {
+  const filteredCards = cards.filter((card: Card) => {
+    const keysPresentOnCard = Object.keys(card);
+    const keysRequiredOnCard = ["Y", "N", "Q", "A", "tag"];
+    return keysRequiredOnCard.every((key) => keysPresentOnCard.includes(key));
+  });
+
+  if (!filteredCards.length) {
+    return Promise.reject({ status: 400, message: "malformed request body" });
+  }
+  if (cards.length - filteredCards.length > 2) {
+    return Promise.reject({ status: 400, message: "not enough passing cards" });
+  }
+  return filteredCards;
 }

@@ -6,56 +6,60 @@ import {
   postDeck,
 } from "../models/decksModel";
 
-export function getDecksByUsername(
+export async function getDecksByUsername(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
   const { username } = req.params;
-  fetchDecksByUsername(username)
-    .then((decks) => {
-      res.status(200).send({ decks });
-    })
-    .catch(next);
+  try {
+    const decks = await fetchDecksByUsername(username);
+    res.status(200).send({ decks });
+  } catch (err) {
+    next(err);
+  }
 }
 
-export function addNewDeck(
+export async function addNewDeck(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
   const { username } = req.params;
   const { deckName, tags } = req.body;
-  postDeck(username, deckName, tags)
-    .then((deck) => {
-      res.status(201).send({ deck });
-    })
-    .catch(next);
+  try {
+    const deck = await postDeck(username, deckName, tags);
+    res.status(201).send({ deck });
+  } catch (err) {
+    next(err);
+  }
 }
 
-export function updateDeck(
+export async function updateDeck(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
   const { deck_id } = req.params;
   const { deckName, tags } = req.body;
-  patchDeck(deck_id, deckName, tags)
-    .then((deck) => {
-      res.status(200).send({ deck });
-    })
-    .catch(next);
+  try {
+    const deck = await patchDeck(deck_id, deckName, tags);
+    res.status(200).send({ deck });
+  } catch (err) {
+    next(err);
+  }
 }
 
-export function removeDeck(
+export async function removeDeck(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
   const { deck_id } = req.params;
-  deleteDeck(deck_id)
-    .then(() => {
-      res.status(204).send();
-    })
-    .catch(next);
+  try {
+    await deleteDeck(deck_id);
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
 }

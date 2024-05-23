@@ -12,6 +12,7 @@ beforeEach(async () => {
 afterAll(async () => {
   await disconnectDB();
 });
+
 describe("/not-a-route", () => {
   test("GET:404 responds with an error message when given an invalid route", () => {
     return request(app)
@@ -198,6 +199,7 @@ describe("/api/users/:username", () => {
 describe("DELETE /api/users/:username", () => {
   test("DELETE 204 - deletes an existing user and corresponding decks", () => {
     return request(app).delete("/api/users/kooooo").expect(204);
+    
   });
   test("DELETE 404 - responds with an error when passing an username for a user that does not exist in the database", () => {
     return request(app)
@@ -347,7 +349,7 @@ describe("PATCH /api/decks/:deck_id", () => {
           cards: expect.any(Array),
         });
       });
-  }, 60000);
+  }, 50000);
   test("PATCH 404 /api/decks/ - returns 404 when deck with that id is not found", () => {
     return request(app)
       .patch("/api/decks/664e24d92a39772d1e86e942")

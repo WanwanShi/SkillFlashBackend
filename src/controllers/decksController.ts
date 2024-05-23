@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  deleteDeck,
   fetchDecksByUsername,
   patchDeck,
   postDeck,
@@ -41,7 +42,20 @@ export function updateDeck(
   const { deckName, tags } = req.body;
   patchDeck(deck_id, deckName, tags)
     .then((deck) => {
-      res.status(200).send({deck});
+      res.status(200).send({ deck });
+    })
+    .catch(next);
+}
+
+export function removeDeck(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  const { deck_id } = req.params;
+  deleteDeck(deck_id)
+    .then(() => {
+      res.status(204).send();
     })
     .catch(next);
 }

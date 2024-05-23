@@ -303,31 +303,7 @@ describe("POST /api/decks/:username", () => {
 				expect(message).toBe("Malformed request body");
 			});
 	}, 40000);
-	//   test("POST:400 responds with bad body error if DECK is malformed (cards>deck)", () => {
-	//     return request(app)
-	//       .post("/api/decks/kooooo")
-	//       .send({
-	//         deckName: "deck6",
-	//         cards: [{ name: "cats" }],
-	//       })
-	//       .expect(400)
-	//       .then(({ body: { message } }) => {
-	//         expect(message).toBe("Failed generating cards. Please try again.");
-	//       });
-	//   });
 
-	//   test("POST: 400 responds with not enough passing cards if >2 cards in generated deck does not meet requirements", () => {
-	//     return request(app)
-	//       .post("/api/decks/kooooo")
-	//       .send({
-	//         deckName: "deck10",
-	//         cards: deck11,
-	//       })
-	//       .expect(400)
-	//       .then(({ body: { message } }) => {
-	//         expect(message).toBe("not enough passing cards");
-	//       });
-	//   });
 });
 
 describe("PATCH /api/decks/:deck_id", () => {

@@ -27,7 +27,7 @@ export function stringToObject(string: string) {
   return addKeys(cards);
 }
 
-interface Card {
+export interface Card {
   Y?: number;
   N?: number;
   card_id?: string;

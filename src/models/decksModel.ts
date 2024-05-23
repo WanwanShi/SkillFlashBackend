@@ -1,8 +1,9 @@
 import { getDb } from "../database/connection";
 import { checkExistenceUser } from "./usersModel";
-import { Card, deckFormat } from "../utils/AIDataFormatter";
+import { deckFormat } from "../utils/AIDataFormatter";
 import { ObjectId } from "mongodb";
 import { isValidObjectId } from "mongoose";
+import {Card} from '../utils/cohere/utils'
 
 import { cohereRequestCards } from "../utils/cohere/utils";
 

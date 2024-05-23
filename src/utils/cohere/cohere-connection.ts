@@ -3,6 +3,8 @@ import { stringToObject } from "./utils";
 import * as dotenv from "dotenv";
 import * as path from "path";
 
+
+
 dotenv.config({
   path: path.resolve(__dirname, "../../../.env"),
 });
@@ -13,7 +15,7 @@ const cohere = new CohereClient({
   token: apiKey,
 });
 
-export async function getCohereCards(message: string, chatHistory: Array<{}>) {
+export async function getCohereCards(message: string, chatHistory: Array<{}>):Promise<any> {
   console.log('AI connected')
   const testPreamble = `
 ## Task & Context
@@ -43,8 +45,8 @@ You are helping tech professionals preparing for an interview. Generate the exac
 
     return [newChatHistory, flashcards];
   } catch (error) {
-    console.error("Error:", error);
-    return error;
+    
+    return Promise.reject(error);
   }
 }
 

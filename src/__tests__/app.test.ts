@@ -195,6 +195,29 @@ describe("/api/users/:username", () => {
       });
   });
 });
+describe("DELETE /api/users/:username", () => {
+  test("DELETE 204 - deletes an existing user and corresponding decks", () => {
+    return request(app).delete("/api/users/kooooo").expect(204);
+  });
+  test("DELETE 404 - responds with an error when passing an username for a user that does not exist in the database", () => {
+    return request(app)
+      .delete("/api/users/koo2")
+      .expect(404)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("User not found");
+      });
+  });
+  test("DELETE 400 - responds with an error when passing an invalid username for a user", () => {
+    return request(app)
+      .delete("/api/decks/ko")
+      .expect(400)
+      .then(({ body }) => {
+        const { message } = body;
+        expect(message).toBe("Malformed request body");
+      });
+  });
+});
 
 describe("GET /api/decks/:username", () => {
   test("GET:200 responds with array of deck objects based on username", () => {

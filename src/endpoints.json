@@ -76,6 +76,21 @@
       "exist": true
     }
   },
+  "DELETE api/users/:username": {
+    "description": "deletes the user and corresponding decks for the given username",
+    "errorResponse": [
+      {
+        "GET 404": {
+          "message": "User not found"
+        }
+      },
+      {
+        "GET 400": {
+          "message": "Malformed request body"
+        }
+      }
+    ]
+  },
   "GET /api/decks/:username": {
     "description": "serves an array of decks for specific user",
     "query": [],

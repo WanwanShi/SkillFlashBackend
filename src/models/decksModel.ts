@@ -3,7 +3,7 @@ import { checkExistenceUser } from "./usersModel";
 import { deckFormat } from "../utils/AIDataFormatter";
 import { ObjectId } from "mongodb";
 import { isValidObjectId } from "mongoose";
-import {Card} from '../utils/cohere/utils'
+import { Card } from "../utils/cohere/utils";
 
 import { cohereRequestCards } from "../utils/cohere/utils";
 
@@ -56,29 +56,28 @@ export async function postDeck(username: string, deckName: string, tags: []) {
   return await db.collection("decks").findOne({ deckName });
 }
 
-export async function patchDeck(
-  deck_id: string,
-  deckName: string,
-  tags: []
-) {
-
+export async function patchDeck(deck_id: string, deckName: string, tags: []) {
   const db = getDb();
 
   if (!isValidObjectId(deck_id)) {
-    return Promise.reject({ status: 400, message: "bad deck_id" })
+    return Promise.reject({ status: 400, message: "bad deck_id" });
   }
-  if (!tags || !Array.isArray(tags)) return Promise.reject({ status: 400, message: "bad or empty request body" })
+  if (!tags || !Array.isArray(tags))
+    return Promise.reject({
+      status: 400,
+      message: "bad or empty request body",
+    });
   const objectId = new ObjectId(deck_id);
   const deck = await db.collection("decks").findOne({ _id: objectId });
   if (!deck) return Promise.reject({ status: 404, message: "deck not found" });
 
   const [newChatHistory, cards] = await cohereRequestCards(tags);
 
-
   if (deckName && typeof deckName === "string") deck.deckName = deckName;
   if (cards && Array.isArray(cards)) deck.cards = cards;
-  if (newChatHistory && Array.isArray(newChatHistory)) deck.chatHistory = [...deck.chatHistory, ...newChatHistory];
- 
+  if (newChatHistory && Array.isArray(newChatHistory))
+    deck.chatHistory = [...deck.chatHistory, ...newChatHistory];
+
   if (tags && Array.isArray(tags)) deck.tags = tags;
   else {
     return Promise.reject({
@@ -87,10 +86,23 @@ export async function patchDeck(
     });
   }
 
-  await db
-    .collection("decks")
-    .updateOne({ _id: objectId }, { $set: deck });
-  return await db
-    .collection('decks')
-    .findOne({ _id: objectId })
+  await db.collection("decks").updateOne({ _id: objectId }, { $set: deck });
+  return await db.collection("decks").findOne({ _id: objectId });
+}
+
+export async function deleteDeck(deck_id: string) {
+  const db = getDb();
+  if (!isValidObjectId(deck_id)) {
+    return Promise.reject({ status: 400, message: "Malformed request body" });
+  }
+  const objectId = new ObjectId(deck_id);
+
+  const result = await db.collection("decks").deleteOne({ _id: objectId });
+
+  if (result.deletedCount === 0)
+    return Promise.reject({
+      status: 404,
+      message: "Deck not found",
+    });
+  return;
 }

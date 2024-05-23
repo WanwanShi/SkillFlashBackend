@@ -5,6 +5,7 @@ import { seedDB } from "../database/seeds/seed_test";
 import endpoints from "../endpoints.json";
 import { Deck } from "../utils/AIDataFormatter";
 
+
 beforeEach(async () => {
   await connectDB();
   await seedDB();
@@ -199,7 +200,7 @@ describe("/api/users/:username", () => {
 describe("DELETE /api/users/:username", () => {
   test("DELETE 204 - deletes an existing user and corresponding decks", () => {
     return request(app).delete("/api/users/kooooo").expect(204);
-    
+
   });
   test("DELETE 404 - responds with an error when passing an username for a user that does not exist in the database", () => {
     return request(app)
@@ -331,7 +332,7 @@ describe("POST /api/decks/:username", () => {
 });
 
 describe("PATCH /api/decks/:deck_id", () => {
-  test("PATCH 200 /api/decks/<valid deck_id> - returns 204 - no content", () => {
+  test("PATCH 200 /api/decks/<valid deck_id> - returns 200 and the patched deck", () => {
     return request(app)
       .patch("/api/decks/664e21109425c7ba3ae7fa85")
       .send({
@@ -350,6 +351,26 @@ describe("PATCH /api/decks/:deck_id", () => {
         });
       });
   }, 50000);
+
+  test("PATCH 200 /api/decks/<valid deck_id> -  patch deck without calling AI when a deck object is passed", () => {
+    return request(app)
+      .patch("/api/decks/664e21109425c7ba3ae7fa85")
+      .send({
+        deckName: "cat",
+        cards: [{ Q: "am i a valid q?", A: "am i a valid a?", Y: 2, N: 1, tag: 'sometag' }]
+      })
+      .expect(200)
+      .then(({ body: { deck } }) => {
+        expect(deck).toMatchObject({
+          _id: expect.any(String),
+          deckName: "cat",
+          username: "kooooo",
+          tags: expect.any(Array),
+          chatHistory: expect.any(Array),
+          cards: [{ Q: "am i a valid q?", A: "am i a valid a?", Y: 2, N: 1, tag: 'sometag' }],
+        });
+      });
+  },);
   test("PATCH 404 /api/decks/ - returns 404 when deck with that id is not found", () => {
     return request(app)
       .patch("/api/decks/664e24d92a39772d1e86e942")

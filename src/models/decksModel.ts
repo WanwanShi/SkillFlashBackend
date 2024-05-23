@@ -89,10 +89,46 @@ export async function patchDeck(deck_id: string, deckName: string, tags: []) {
   return await db.collection("decks").findOne({ _id: objectId });
 }
 
+
+export async function patchDeckWithoutAI(deck_id: string, deckName: string, cards: Card[]) {
+  const db = getDb();
+  if (!isValidObjectId(deck_id)) {
+    return Promise.reject({ status: 400, message: "bad deck_id" });
+  }
+
+  const objectId = new ObjectId(deck_id);
+  const deck = await db.collection("decks").findOne({ _id: objectId });
+  if (!deck) return Promise.reject({ status: 404, message: "deck not found" });
+
+  if (cards && Array.isArray(cards) && cards.every((card: Card) => {
+    return (
+      card.hasOwnProperty("Y") &&
+      card.hasOwnProperty("N") &&
+      card.hasOwnProperty("Q") &&
+      card.hasOwnProperty("A") &&
+      card.hasOwnProperty("tag"))
+  })) {
+    deck.cards = cards
+    if (deckName && typeof deckName === "string") deck.deckName = deckName;
+
+    await db.collection("decks").updateOne({ _id: objectId }, { $set: deck });
+    return await db.collection("decks").findOne({ _id: objectId });
+  }
+  else {
+    return Promise.reject({
+      status: 400,
+      message: "bad or empty request body",
+    });
+  }
+
+
+
+}
+
 export async function deleteDeck(deck_id: string) {
   const db = getDb();
 
-  
+
   if (!isValidObjectId(deck_id)) {
     return Promise.reject({ status: 400, message: "Malformed request body" });
   }

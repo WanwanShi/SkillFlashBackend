@@ -31,16 +31,17 @@ export const seedDB = async (): Promise<void> => {
 
 
 	try {
+
 		await userCollection.deleteMany({});
 		await tagsCollection.deleteMany({});
 		await decksCollection.deleteMany({});
 		await userCollection.insertMany(hashedSeed);
 		await tagsCollection.insertMany(tags_test);
-		await decksCollection.insertMany(decks_test);
 		await decksCollection.insertOne(deck_test)
+		await decksCollection.insertMany(decks_test);
 
 	} catch (error) {
-		console.error("Error seeding data:", error.message);
+		return Promise.reject(error);
 	} finally {
 	}
 };

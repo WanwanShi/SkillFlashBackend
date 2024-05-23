@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 import {
   fetchDecksByUsername,
   patchDeck,
@@ -38,10 +38,10 @@ export function updateDeck(
   next: express.NextFunction
 ) {
   const { deck_id } = req.params;
-  const { deckName, cards, chatHistory, tags } = req.body;
-  patchDeck(deck_id, deckName, cards, chatHistory, tags)
-    .then((result) => {
-      res.status(204).send(result);
+  const { deckName, tags } = req.body;
+  patchDeck(deck_id, deckName, tags)
+    .then((deck) => {
+      res.status(200).send({deck});
     })
     .catch(next);
 }

@@ -58,20 +58,26 @@ export async function postDeck(username: string, deckName: string, tags: []) {
 export async function patchDeck(
   deck_id: string,
   deckName: string,
-  cards: Card[],
-  chatHistory: string[],
-  tags: string[]
+  tags: []
 ) {
+
   const db = getDb();
-  if (!isValidObjectId(deck_id))
-    return Promise.reject({ status: 400, message: "bad deck_id" });
+
+  if (!isValidObjectId(deck_id)) {
+    return Promise.reject({ status: 400, message: "bad deck_id" })
+  }
+  if (!tags || !Array.isArray(tags)) return Promise.reject({ status: 400, message: "bad or empty request body" })
   const objectId = new ObjectId(deck_id);
   const deck = await db.collection("decks").findOne({ _id: objectId });
-
   if (!deck) return Promise.reject({ status: 404, message: "deck not found" });
+
+  const [newChatHistory, cards] = await cohereRequestCards(tags);
+
+
   if (deckName && typeof deckName === "string") deck.deckName = deckName;
   if (cards && Array.isArray(cards)) deck.cards = cards;
-  if (chatHistory && Array.isArray(chatHistory)) deck.chatHistory = chatHistory;
+  if (newChatHistory && Array.isArray(newChatHistory)) deck.chatHistory = [...deck.chatHistory, ...newChatHistory];
+ 
   if (tags && Array.isArray(tags)) deck.tags = tags;
   else {
     return Promise.reject({
@@ -80,7 +86,10 @@ export async function patchDeck(
     });
   }
 
-  return await db
+  await db
     .collection("decks")
     .updateOne({ _id: objectId }, { $set: deck });
+  return await db
+    .collection('decks')
+    .findOne({ _id: objectId })
 }

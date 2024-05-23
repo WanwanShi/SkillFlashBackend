@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-
+import { ChatHistory } from "./cohere/cohere-connection";
 export interface Card {
   Q: string;
   A: string;
@@ -14,7 +14,7 @@ export interface Deck {
   deckName: string;
   username: string;
   tags: string[];
-  chatHistory: object[];
+  chatHistory: ChatHistory[];
   cards: Card[];
 }
 
@@ -33,7 +33,7 @@ export const deckFormat = (
   deckName: string,
   deck: Card[],
   username: string,
-  chatHistory: []
+  chatHistory: ChatHistory[]
 ) => {
   const newDeck: Deck = {
     username: username,

@@ -2,7 +2,7 @@ import { Collection, ObjectId } from "mongodb";
 import { seedHasher } from "../data/test_data/users";
 import { connectDB, getDb } from "../connection";
 import tags from "../data/test_data/tags";
-import { seedDeck } from "../data/test_data/decks";
+import { patch_Deck, seedDecks } from "../data/test_data/decks";
 import { Deck } from "../../utils/AIDataFormatter";
 
 export interface User {
@@ -24,7 +24,11 @@ export const seedDB = async (): Promise<void> => {
 	const decksCollection: Collection<Deck> = db.collection("decks");
 	const hashedSeed: User[] = await seedHasher();
 	const tags_test: Tag[] = tags;
-	const deck_test: Deck[] = seedDeck;
+	const decks_test: Deck[] = seedDecks;
+	patch_Deck._id = new ObjectId('664e21109425c7ba3ae7fa85');
+	const deck_test: Deck = patch_Deck;
+
+
 
 	try {
 		await userCollection.deleteMany({});
@@ -32,7 +36,8 @@ export const seedDB = async (): Promise<void> => {
 		await decksCollection.deleteMany({});
 		await userCollection.insertMany(hashedSeed);
 		await tagsCollection.insertMany(tags_test);
-		await decksCollection.insertMany(deck_test);
+		await decksCollection.insertMany(decks_test);
+		await decksCollection.insertOne(deck_test)
 
 	} catch (error) {
 		console.error("Error seeding data:", error.message);

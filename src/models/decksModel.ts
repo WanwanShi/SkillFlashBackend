@@ -2,6 +2,7 @@ import { getDb } from "../database/connection"
 import { checkExistenceUser } from "./usersModel";
 import { Card, deckFormat } from "../utils/AIDataFormatter";
 import { ObjectId } from "mongodb";
+import { isValidObjectId } from "mongoose";
 
 
 
@@ -14,10 +15,10 @@ export async function fetchDecksByUsername(username: string) {
 
 export async function postDeck(username: string, deckName: string, cards: Card[]) {
     const db = getDb()
+    if (! await checkExistenceUser(username)) return Promise.reject({ status: 404, message: "username does not exist" });
 
     if (!deckName || !cards || !username) return Promise.reject({ status: 400, message: "malformed request body" });
 
-    if (! await checkExistenceUser(username)) return Promise.reject({ status: 404, message: "username does not exist" });
 
     if (username.length < 3) return Promise.reject({ status: 400, message: "no username provided" });
 
@@ -44,18 +45,19 @@ export async function postDeck(username: string, deckName: string, cards: Card[]
 
 export async function patchDeck(deck_id: string, deckName: string, cards: Card[], chatHistory: string[], tags: string[]) {
     const db = getDb();
+    if (!isValidObjectId(deck_id)) return Promise.reject({ status: 400, message: "bad deck_id" });
     const objectId = new ObjectId(deck_id);
-    console.log(objectId, typeof objectId)
     const deck = await db.collection('decks').findOne({ _id: objectId })
-    console.log('deck -->', deck);
+
+
+
 
     if (!deck) return Promise.reject({ status: 404, message: "deck not found" });
+    if (deckName && typeof deckName === 'string') deck.deckName = deckName;
+    if (cards && Array.isArray(cards)) deck.cards = cards;
+    if (chatHistory && Array.isArray(chatHistory)) deck.chatHistory = chatHistory;
+    if (tags && Array.isArray(tags)) deck.tags = tags;
+    else { return Promise.reject({ status: 400, message: 'bad or empty request body' }) }
 
-    const newDeck = structuredClone(deck);
-    if (deckName) newDeck.deckName = deckName;
-    if (cards) newDeck.cards = cards;
-    if (chatHistory) newDeck.chatHistory = chatHistory;
-    if (tags) newDeck.tags = tags;
-
-    return await db.collection('decks').updateOne({ _id: objectId }, { $set: newDeck });
+    return await db.collection('decks').updateOne({ _id: objectId }, { $set: deck });
 }

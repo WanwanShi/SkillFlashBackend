@@ -2,6 +2,7 @@ import express from "express";
 import {
   deleteDeck,
   fetchDecksByUsername,
+  patchCards,
   patchDeck,
   postDeck,
 } from "../models/decksModel";
@@ -58,6 +59,22 @@ export async function removeDeck(
   const { deck_id } = req.params;
   try {
     await deleteDeck(deck_id);
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateCards(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  const { deck_id } = req.params;
+  const { cards } = req.body;
+
+  try {
+    await patchCards(deck_id, cards);
     res.status(204).send();
   } catch (err) {
     next(err);

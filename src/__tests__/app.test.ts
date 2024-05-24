@@ -445,6 +445,17 @@ describe("PATCH /api/decks/:deck_id/cards", () => {
         expect(message).toBe("bad or empty request body");
       });
   });
+  test("PATCH:400 responds with error when request body is not an array", () => {
+    return request(app)
+      .patch("/api/decks/664e21109425c7ba3ae7fa85/cards")
+      .send({
+        cards: "cards",
+      })
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("bad or empty request body");
+      });
+  });
   test("PATCH:400 responds with error when request body has incorrect key name", () => {
     return request(app)
       .patch("/api/decks/664e21109425c7ba3ae7fa85/cards")

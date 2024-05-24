@@ -131,11 +131,25 @@ export async function patchCards(deck_id: string, cards: []) {
   if (!isValidObjectId(deck_id)) {
     return Promise.reject({ status: 400, message: "bad deck_id" });
   }
-  if (!cards || !Array.isArray(cards) || !cards.length)
+  if (
+    !cards ||
+    !cards.length ||
+    !Array.isArray(cards) ||
+    !cards.every((card: Card) => {
+      return (
+        card.hasOwnProperty("Y") &&
+        card.hasOwnProperty("N") &&
+        card.hasOwnProperty("Q") &&
+        card.hasOwnProperty("A") &&
+        card.hasOwnProperty("tag")
+      );
+    })
+  ) {
     return Promise.reject({
       status: 400,
       message: "bad or empty request body",
     });
+  }
 
   const objectId = new ObjectId(deck_id);
   const originalDeck = await db.collection("decks").findOne({ _id: objectId });

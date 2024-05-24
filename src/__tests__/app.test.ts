@@ -4,6 +4,7 @@ import { connectDB, disconnectDB } from "../database/connection";
 import { seedDB } from "../database/seeds/seed_test";
 import endpoints from "../endpoints.json";
 import { Deck } from "../utils/AIDataFormatter";
+import { deck12 } from "../database/data/test_data/decks_data";
 
 beforeEach(async () => {
   await connectDB();
@@ -67,7 +68,7 @@ describe("/api/tags", () => {
       });
   });
 
-  test("GET:400 responds with error message shows invalid query", () => {
+  test("GET:400 responds with error message for an invalid query", () => {
     return request(app)
       .get("/api/tags?non_exist_Category=technical-skills")
       .expect(400)
@@ -78,7 +79,7 @@ describe("/api/tags", () => {
 });
 
 describe("/api/users/signup", () => {
-  test("POST:201 responds with newly created user object", () => {
+  test("POST:201 responds with the newly created user object", () => {
     const newUser = {
       username: "test1",
       email: "test1@gmail.com",
@@ -100,7 +101,7 @@ describe("/api/users/signup", () => {
       });
   });
 
-  test("POST:400 responds with an error message when provided incomplete object", () => {
+  test("POST:400 responds with an error when provided incomplete request body", () => {
     const newUser = {
       username: "test1",
       password: "password",
@@ -114,7 +115,7 @@ describe("/api/users/signup", () => {
       });
   });
 
-  test("POST:400 responds with an error message when provided invalid object property", () => {
+  test("POST:400 responds with an error when request body has invalid object properties", () => {
     const newUser = {
       username: "te",
       email: "",
@@ -131,7 +132,7 @@ describe("/api/users/signup", () => {
 });
 
 describe("/api/users/login", () => {
-  test("POST:200 responds with existing user object", () => {
+  test("POST:200 responds with the existing user object", () => {
     const loginUser = {
       username: "Brooke_Bradtke",
       password: "zUz_0n7y!123YXtr8pL",
@@ -149,7 +150,7 @@ describe("/api/users/login", () => {
       });
   });
 
-  test("POST:404 responds with an error message when provided non-existent username", () => {
+  test("POST:404 responds with an error when provided with non-existent username", () => {
     const loginUser = {
       username: "does_not_exist",
       password: "zUz_0n7yYXtr8pL",
@@ -163,7 +164,7 @@ describe("/api/users/login", () => {
       });
   });
 
-  test("POST:400 responds with an error message whe provided incorrect password", () => {
+  test("POST:400 responds with an error when provided an incorrect password", () => {
     const loginUser = {
       username: "Brooke_Bradtke",
       password: "zUz_0n7yYXtr8pLabd",
@@ -179,7 +180,7 @@ describe("/api/users/login", () => {
 });
 
 describe("/api/users/:username", () => {
-  test("GET 200: responds with true of the existed username", () => {
+  test("GET:200 responds true if the passed username exists in the database", () => {
     return request(app)
       .get("/api/users/Brooke_Bradtke")
       .expect(200)
@@ -187,7 +188,7 @@ describe("/api/users/:username", () => {
         expect(exist).toBe(true);
       });
   });
-  test("GET 200: responds with false of the username does not exist", () => {
+  test("GET:200 responds false if the username does not exist in the database", () => {
     return request(app)
       .get("/api/users/notexistusername")
       .expect(200)
@@ -195,11 +196,11 @@ describe("/api/users/:username", () => {
         expect(exist).toBe(false);
       });
   });
+  ///error if username incorrect length?
 });
 describe("DELETE /api/users/:username", () => {
-  test("DELETE 204 - deletes an existing user and corresponding decks", () => {
+  test("DELETE:204  deletes an existing user and corresponding decks", () => {
     return request(app).delete("/api/users/kooooo").expect(204);
-    
   });
   test("DELETE 404 - responds with an error when passing an username for a user that does not exist in the database", () => {
     return request(app)
@@ -210,7 +211,7 @@ describe("DELETE /api/users/:username", () => {
         expect(message).toBe("User not found");
       });
   });
-  test("DELETE 400 - responds with an error when passing an invalid username for a user", () => {
+  test("DELETE:400  responds with an error when passing an invalid username for a user", () => {
     return request(app)
       .delete("/api/decks/ko")
       .expect(400)
@@ -259,8 +260,7 @@ describe("GET /api/decks/:username", () => {
         expect(message).toBe("username does not exist");
       });
   });
-
-  test("GET:400 responds with an error message when provided empty  username", () => {
+  test("GET:400 responds with an error message when provided empty username", () => {
     return request(app)
       .get("/api/decks/''")
       .expect(400)
@@ -271,7 +271,7 @@ describe("GET /api/decks/:username", () => {
 });
 
 describe("POST /api/decks/:username", () => {
-  test("POST:201 responds with posted deck object in decks collection", () => {
+  test("POST:201 accepts a request to create a deck and responds with the new deck object from decks collection", () => {
     return request(app)
       .post("/api/decks/kooooo")
       .send({
@@ -290,7 +290,7 @@ describe("POST /api/decks/:username", () => {
         });
       });
   }, 60000);
-  test("POST:404 responds with not found error if username does not exist ", () => {
+  test("POST:404 responds with an error if username does not exist ", () => {
     return request(app)
       .post("/api/decks/koooo0o")
       .send({
@@ -303,7 +303,7 @@ describe("POST /api/decks/:username", () => {
       });
   });
 
-  test("POST:400 responds with bad body error if req body is malformed (deckName)", () => {
+  test("POST:400 responds with an error if request body is malformed (deckName)", () => {
     return request(app)
       .post("/api/decks/kooooo")
       .send({
@@ -316,7 +316,7 @@ describe("POST /api/decks/:username", () => {
       });
   });
 
-  test("POST:400 responds with bad body error if req body is malformed (tags)", () => {
+  test("POST:400 responds with an error if request body is malformed (tags)", () => {
     return request(app)
       .post("/api/decks/kooooo")
       .send({
@@ -331,7 +331,7 @@ describe("POST /api/decks/:username", () => {
 });
 
 describe("PATCH /api/decks/:deck_id", () => {
-  test("PATCH 200 /api/decks/<valid deck_id> - returns 204 - no content", () => {
+  test("PATCH:200 accepts a request to generate more cards and returns the updated deck  ", () => {
     return request(app)
       .patch("/api/decks/664e21109425c7ba3ae7fa85")
       .send({
@@ -350,7 +350,8 @@ describe("PATCH /api/decks/:deck_id", () => {
         });
       });
   }, 50000);
-  test("PATCH 404 /api/decks/ - returns 404 when deck with that id is not found", () => {
+
+  test("PATCH:404 responds with an error when deck with that id is not found", () => {
     return request(app)
       .patch("/api/decks/664e24d92a39772d1e86e942")
       .send({
@@ -362,8 +363,7 @@ describe("PATCH /api/decks/:deck_id", () => {
         expect(message).toBe("deck not found");
       });
   }, 40000);
-
-  test("PATCH 400 /api/decks/ - returns 400 when deck_id is invalid", () => {
+  test("PATCH:400 responds with an error when deck_id is invalid", () => {
     return request(app)
       .patch("/api/decks/123456")
       .send({
@@ -375,7 +375,7 @@ describe("PATCH /api/decks/:deck_id", () => {
         expect(message).toBe("bad deck_id");
       });
   });
-  test("PATCH 400 /api/decks/ - returns 400 when request body is malformed", () => {
+  test("PATCH:400 responds with an error when request body is malformed", () => {
     return request(app)
       .patch("/api/decks/664e21109425c7ba3ae7fa85")
       .send({
@@ -389,7 +389,7 @@ describe("PATCH /api/decks/:deck_id", () => {
         expect(message).toBe("bad or empty request body");
       });
   }, 40000);
-  test("PATCH 400 /api/decks/ - returns 400 when request body is missing", () => {
+  test("PATCH:400 responds with an error when request body is missing", () => {
     return request(app)
       .patch("/api/decks/664e21109425c7ba3ae7fa85")
       .send()
@@ -400,12 +400,12 @@ describe("PATCH /api/decks/:deck_id", () => {
   }, 40000);
 });
 describe("DELETE /api/decks/:deck_id", () => {
-  test("DELETE 204 - deletes an existing deck", () => {
+  test("DELETE:204 deletes an existing deck", () => {
     return request(app)
       .delete("/api/decks/664e21109425c7ba3ae7fa85")
       .expect(204);
   });
-  test("DELETE 404 - responds with an error when passing an id for a deck that does not exist in the database", () => {
+  test("DELETE:404 responds with an error when passing an id for a deck that does not exist in the database", () => {
     return request(app)
       .delete("/api/decks/664f4eb3f7e0923267579fb1")
       .expect(404)
@@ -414,13 +414,101 @@ describe("DELETE /api/decks/:deck_id", () => {
         expect(message).toBe("Deck not found");
       });
   });
-  test("DELETE 400 - responds with an error when passing an invalid deck id for a deck", () => {
+  test("DELETE:400 responds with an error when passing an invalid deck id for a deck", () => {
     return request(app)
       .delete("/api/decks/deck44")
       .expect(400)
       .then(({ body }) => {
         const { message } = body;
         expect(message).toBe("Malformed request body");
+      });
+  });
+});
+
+describe("PATCH /api/decks/:deck_id/cards", () => {
+  test("PATCH:204 accepts a request to update the card properties in the deck ", () => {
+    return request(app)
+      .patch("/api/decks/664e21109425c7ba3ae7fa85/cards")
+      .send({
+        cards: deck12,
+      })
+      .expect(204);
+  });
+  test("PATCH:400 responds with error when request body is has an empty array", () => {
+    return request(app)
+      .patch("/api/decks/664e21109425c7ba3ae7fa85/cards")
+      .send({
+        cards: [],
+      })
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("bad or empty request body");
+      });
+  });
+  test("PATCH:400 responds with error when request body is not an array", () => {
+    return request(app)
+      .patch("/api/decks/664e21109425c7ba3ae7fa85/cards")
+      .send({
+        cards: "cards",
+      })
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("bad or empty request body");
+      });
+  });
+  test("PATCH:400 responds with error when request body has incorrect key name", () => {
+    return request(app)
+      .patch("/api/decks/664e21109425c7ba3ae7fa85/cards")
+      .send({
+        deck: deck12,
+      })
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("bad or empty request body");
+      });
+  });
+  test("PATCH:400 responds with error when request body has incorrect format", () => {
+    return request(app)
+      .patch("/api/decks/664e21109425c7ba3ae7fa85/cards")
+      .send({
+        deckName: "deck2",
+        username: "kooooo",
+        tags: expect.any(Array),
+      })
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("bad or empty request body");
+      });
+  });
+  test("PATCH:400 responds with error when request body is missing", () => {
+    return request(app)
+      .patch("/api/decks/664e21109425c7ba3ae7fa85/cards")
+      .send()
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("bad or empty request body");
+      });
+  });
+  test("PATCH:404 responds with an error when deck id does not exist in the database", () => {
+    return request(app)
+      .patch("/api/decks/664e24d92a39772d1e86e942/cards")
+      .send({
+        cards: deck12,
+      })
+      .expect(404)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("deck not found");
+      });
+  });
+  test("PATCH:400 returns 400 when deck_id is invalid", () => {
+    return request(app)
+      .patch("/api/decks/123456/cards")
+      .send({
+        cards: deck12,
+      })
+      .expect(400)
+      .then(({ body: { message } }) => {
+        expect(message).toBe("bad deck_id");
       });
   });
 });

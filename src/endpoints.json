@@ -1,273 +1,289 @@
 {
-  "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
-  },
-  "GET /api/tags": {
-    "description": "serves an array of all tags",
-    "query": ["tagCategory"],
-    "exampleResponse": {
-      "tags": [
-        {
-          "_id": "664b46f82c0e05e0e615dd9f",
-          "tagName": "JavaScript",
-          "tagCategory": "technical-skills"
-        },
-        {
-          "_id": "664b46f82c0e05e0e615dda0",
-          "tagName": "Python",
-          "tagCategory": "technical-skills"
-        },
-        {
-          "_id": "664b46f82c0e05e0e615ddd0",
-          "tagName": "Testing Techniques",
-          "tagCategory": "practical-knowledge"
-        }
-      ]
-    },
-    "errorResponse": [
-      {
-        "GET 400": {
-          "message": "Invalid query"
-        }
-      }
-    ]
-  },
-  "POST /api/users/signup": {
-    "description": "serves a newly created user object with username,email and userId.",
-    "query": [],
-    "exampleResponse": {
-      "_id": "664c54c9f9398e48bdfa372a",
-      "username": "test1",
-      "email": "test1@gmail.com"
-    },
-    "errorResponse": [
-      {
-        "POST 400": {
-          "message": "failed to signup"
-        }
-      }
-    ],
-    "exampleRequestBody": {
-      "username": "test1",
-      "email": "test1@gmail.com",
-      "password": "password!12C_"
-    }
-  },
-  "POST /api/users/login": {
-    "description": "serves an exist user object",
-    "query": [],
-    "exampleResponse": {
-      "_id": "664c54c9f9398e48bdfa372a",
-      "username": "test1",
-      "email": "test1@gmail.com"
-    },
-    "errorResponse": [
-      {
-        "POST 404": {
-          "message": "username does not exist"
-        }
-      },
-      {
-        "POST 400": {
-          "message": "username and password does not match"
-        }
-      }
-    ],
-    "exampleRequestBody": {
-      "username": "test1",
-      "password": "zUz_0n7y!123YXtr8pL"
-    }
-  },
-  "GET /api/users/:username": {
-    "description": "serves a boolean value of the existence of the username",
-    "query": [],
-    "exampleResponse": {
-      "exist": true
-    }
-  },
-  "DELETE api/users/:username": {
-    "description": "deletes the user and corresponding decks for the given username",
-    "errorResponse": [
-      {
-        "GET 404": {
-          "message": "User not found"
-        }
-      },
-      {
-        "GET 400": {
-          "message": "Malformed request body"
-        }
-      }
-    ]
-  },
-  "GET /api/decks/:username": {
-    "description": "serves an array of decks for specific user",
-    "query": [],
-    "exampleResponse": {
-      "decks": [
-        {
-          "card_id": 1,
-          "Q": "How does Django REST Framework handle authentication and permissions?",
-          "A": "Django REST Framework offers a flexible authentication system that integrates with various authentication backends, including tokens, sessions, and OAuth. It also provides fine-grained permission controls, allowing developers to restrict access to specific views or functionality. (Source: Django REST Framework Authentication Documentation)",
-          "tag": "python",
-          "Y": 0,
-          "N": 0
-        },
-        {
-          "card_id": 2,
-          "Q": "What is type hinting in Python, and how does it improve code quality?",
-          "A": "Type hinting in Python involves adding annotations to variables and function arguments to specify their expected types. This improves code quality by enabling static type checking, providing better documentation, and facilitating IDE auto-completion and refactoring. (Source: Python Type Hinting Documentation)",
-          "tag": "python",
-          "Y": 0,
-          "N": 0
-        }
-      ]
-    },
-    "errorResponse": [
-      {
-        "GET 404": {
-          "message": "username does not exist"
-        }
-      },
-      {
-        "GET 400": {
-          "message": "no username provided"
-        }
-      }
-    ]
-  },
-  "POST /api/decks/:username": {
-    "description": "posts a deck to decks for specific user, returns posted deck",
-    "query": [],
-    "exampleResponse": {
-      "_id": "664e24d92a39772d1e86e942",
-      "deckName": "deck7",
-      "username": "kooooo",
-      "tags": ["Angular", "javascript", "nodejs", "supabase", "vue"],
-      "chatHistory": [],
-      "cards": []
-    },
-    "errorResponse": [
-      {
-        "GET 404": {
-          "message": "username does not exist"
-        }
-      },
-      {
-        "GET 400": {
-          "message": "no username provided"
-        }
-      },
-      {
-        "GET 400": {
-          "message": "malformed request body"
-        }
-      },
-      {
-        "GET 400": {
-          "message": "not enough passing cards"
-        }
-      }
-    ],
-    "exampleRequestBody": {
-      "deckName": "deck7",
-      "tags": ["java", "python"]
-    }
-  },
-  "PATCH /api/decks/:deck_id": {
-    "description": "patches properties of deck in decks for specific deck_id, returns patched deck",
-    "query": [],
-    "exampleResponse": {
-      "deckName": "deck2",
-      "tags": ["react", "vue", "supabase", "postgresql"],
-      "chatHistory": [
-        { "role": "USER", "message": "request message" },
-        { "role": "CHATBOT", "message": "Q&As" }
-      ],
-      "cards": [
-        {
-          "card_id": 1,
-          "Q": "How does Django REST Framework handle authentication and permissions?",
-          "A": "Django REST Framework offers a flexible authentication system that integrates with various authentication backends, including tokens, sessions, and OAuth. It also provides fine-grained permission controls, allowing developers to restrict access to specific views or functionality. (Source: Django REST Framework Authentication Documentation)",
-          "tag": "python",
-          "Y": 0,
-          "N": 0
-        },
-        {
-          "card_id": 2,
-          "Q": "What is type hinting in Python, and how does it improve code quality?",
-          "A": "Type hinting in Python involves adding annotations to variables and function arguments to specify their expected types. This improves code quality by enabling static type checking, providing better documentation, and facilitating IDE auto-completion and refactoring. (Source: Python Type Hinting Documentation)",
-          "tag": "python",
-          "Y": 0,
-          "N": 0
-        }
-      ]
-    },
-    "errorResponse": [
-      {
-        "GET 404": {
-          "message": "deck not found"
-        }
-      },
-      {
-        "GET 400": {
-          "message": "bad deck_id"
-        }
-      },
-      {
-        "GET 400": {
-          "message": "bad or empty request body"
-        }
-      }
-    ],
-    "exampleRequestBody": {
-      "deckName": "deck2",
-      "tags": ["Angular", "javascript", "nodejs", "supabase", "vue"]
-    }
-  },
-  "DELETE api/decks/:deck_id": {
-    "description": "deletes the deck with the corresponding deck_id",
-    "errorResponse": [
-      {
-        "GET 404": {
-          "message": "Deck not found"
-        }
-      },
-      {
-        "GET 400": {
-          "message": "Malformed request body"
-        }
-      }
-    ]
-  },
-  "PATCH /api/decks/:deck_id/cards": {
-    "description": "patches properties of cards in the deck for a specific deck_id",
-    "errorResponse": {
-      "GET 404": {
-        "message": "deck not found"
-      },
-      "GET 400": {
-        "message": "bad or empty request body"
-      },
-      "GET 400": {
-        "message": "bad deck_id"
-      }
-    },
-    "exampleRequestBody": [
-      {
-        "Q": "What is event-driven architecture in Node.js, and how does it facilitate concurrency? ",
-        "A": "Node.js employs an event-driven architecture, where all I/O operations are asynchronous and executed in a non-blocking manner. This design enables the server to handle multiple concurrent connections efficiently by registering callbacks for different events, ensuring high scalability and responsiveness. (Source: Node.js Documentation)",
-        "tag": "nodejs",
-        "Y": 0,
-        "N": 1
-      },
-      {
-        "Q": "How does Node.js handle streaming data, and what are some use cases for this capability? ",
-        "A": "Node.js provides built-in support for streaming data, allowing efficient processing of large datasets without loading the entire content into memory. This feature is valuable for handling file uploads, working with large media files, and building realtime data processing systems. (Source: Node.js Stream API Documentation)",
-        "tag": "nodejs",
-        "Y": 2,
-        "N": 0
-      }
-    ]
-  }
+	"GET /api": {
+		"description": "serves up a json representation of all the available endpoints of the api"
+	},
+	"GET /api/tags": {
+		"description": "serves an array of all tags",
+		"query": ["tagCategory"],
+		"exampleResponse": {
+			"tags": [
+				{
+					"_id": "664b46f82c0e05e0e615dd9f",
+					"tagName": "JavaScript",
+					"tagCategory": "technical-skills"
+				},
+				{
+					"_id": "664b46f82c0e05e0e615dda0",
+					"tagName": "Python",
+					"tagCategory": "technical-skills"
+				},
+				{
+					"_id": "664b46f82c0e05e0e615ddd0",
+					"tagName": "Testing Techniques",
+					"tagCategory": "practical-knowledge"
+				}
+			]
+		},
+		"errorResponse": [
+			{
+				"GET 400": {
+					"message": "Invalid query"
+				}
+			}
+		]
+	},
+	"POST /api/users/signup": {
+		"description": "serves a newly created user object with username,email and userId.",
+		"query": [],
+		"exampleResponse": {
+			"_id": "664c54c9f9398e48bdfa372a",
+			"username": "test1",
+			"email": "test1@gmail.com"
+		},
+		"errorResponse": [
+			{
+				"POST 400": {
+					"message": "failed to signup"
+				}
+			}
+		],
+		"exampleRequestBody": {
+			"username": "test1",
+			"email": "test1@gmail.com",
+			"password": "password!12C_"
+		}
+	},
+	"POST /api/users/login": {
+		"description": "serves an exist user object",
+		"query": [],
+		"exampleResponse": {
+			"_id": "664c54c9f9398e48bdfa372a",
+			"username": "test1",
+			"email": "test1@gmail.com"
+		},
+		"errorResponse": [
+			{
+				"POST 404": {
+					"message": "username does not exist"
+				}
+			},
+			{
+				"POST 400": {
+					"message": "username and password does not match"
+				}
+			}
+		],
+		"exampleRequestBody": {
+			"username": "test1",
+			"password": "zUz_0n7y!123YXtr8pL"
+		}
+	},
+	"GET /api/users/:username": {
+		"description": "serves a boolean value of the existence of the username",
+		"query": [],
+		"exampleResponse": {
+			"exist": true
+		}
+	},
+	"PATCH /api/users/:username": {
+		"description": "serves a updated user object",
+		"request": {
+			"username": "string",
+			"email": "string",
+			"password": "string"
+		},
+		"query": [],
+		"exampleResponse": {
+			"user": {
+				"_id": "new ObjectId('66548f70bf69f77ff324bceb')",
+				"username": "newUsername",
+				"email": "hello@gmail.com"
+			}
+		}
+	},
+	"DELETE api/users/:username": {
+		"description": "deletes the user and corresponding decks for the given username",
+		"errorResponse": [
+			{
+				"GET 404": {
+					"message": "User not found"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "Malformed request body"
+				}
+			}
+		]
+	},
+	"GET /api/decks/:username": {
+		"description": "serves an array of decks for specific user",
+		"query": [],
+		"exampleResponse": {
+			"decks": [
+				{
+					"card_id": 1,
+					"Q": "How does Django REST Framework handle authentication and permissions?",
+					"A": "Django REST Framework offers a flexible authentication system that integrates with various authentication backends, including tokens, sessions, and OAuth. It also provides fine-grained permission controls, allowing developers to restrict access to specific views or functionality. (Source: Django REST Framework Authentication Documentation)",
+					"tag": "python",
+					"Y": 0,
+					"N": 0
+				},
+				{
+					"card_id": 2,
+					"Q": "What is type hinting in Python, and how does it improve code quality?",
+					"A": "Type hinting in Python involves adding annotations to variables and function arguments to specify their expected types. This improves code quality by enabling static type checking, providing better documentation, and facilitating IDE auto-completion and refactoring. (Source: Python Type Hinting Documentation)",
+					"tag": "python",
+					"Y": 0,
+					"N": 0
+				}
+			]
+		},
+		"errorResponse": [
+			{
+				"GET 404": {
+					"message": "username does not exist"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "no username provided"
+				}
+			}
+		]
+	},
+	"POST /api/decks/:username": {
+		"description": "posts a deck to decks for specific user, returns posted deck",
+		"query": [],
+		"exampleResponse": {
+			"_id": "664e24d92a39772d1e86e942",
+			"deckName": "deck7",
+			"username": "kooooo",
+			"tags": ["Angular", "javascript", "nodejs", "supabase", "vue"],
+			"chatHistory": [],
+			"cards": []
+		},
+		"errorResponse": [
+			{
+				"GET 404": {
+					"message": "username does not exist"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "no username provided"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "malformed request body"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "not enough passing cards"
+				}
+			}
+		],
+		"exampleRequestBody": {
+			"deckName": "deck7",
+			"tags": ["java", "python"]
+		}
+	},
+	"PATCH /api/decks/:deck_id": {
+		"description": "patches properties of deck in decks for specific deck_id, returns patched deck",
+		"query": [],
+		"exampleResponse": {
+			"deckName": "deck2",
+			"tags": ["react", "vue", "supabase", "postgresql"],
+			"chatHistory": [
+				{ "role": "USER", "message": "request message" },
+				{ "role": "CHATBOT", "message": "Q&As" }
+			],
+			"cards": [
+				{
+					"card_id": 1,
+					"Q": "How does Django REST Framework handle authentication and permissions?",
+					"A": "Django REST Framework offers a flexible authentication system that integrates with various authentication backends, including tokens, sessions, and OAuth. It also provides fine-grained permission controls, allowing developers to restrict access to specific views or functionality. (Source: Django REST Framework Authentication Documentation)",
+					"tag": "python",
+					"Y": 0,
+					"N": 0
+				},
+				{
+					"card_id": 2,
+					"Q": "What is type hinting in Python, and how does it improve code quality?",
+					"A": "Type hinting in Python involves adding annotations to variables and function arguments to specify their expected types. This improves code quality by enabling static type checking, providing better documentation, and facilitating IDE auto-completion and refactoring. (Source: Python Type Hinting Documentation)",
+					"tag": "python",
+					"Y": 0,
+					"N": 0
+				}
+			]
+		},
+		"errorResponse": [
+			{
+				"GET 404": {
+					"message": "deck not found"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "bad deck_id"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "bad or empty request body"
+				}
+			}
+		],
+		"exampleRequestBody": {
+			"deckName": "deck2",
+			"tags": ["Angular", "javascript", "nodejs", "supabase", "vue"]
+		}
+	},
+	"DELETE api/decks/:deck_id": {
+		"description": "deletes the deck with the corresponding deck_id",
+		"errorResponse": [
+			{
+				"GET 404": {
+					"message": "Deck not found"
+				}
+			},
+			{
+				"GET 400": {
+					"message": "Malformed request body"
+				}
+			}
+		]
+	},
+	"PATCH /api/decks/:deck_id/cards": {
+		"description": "patches properties of cards in the deck for a specific deck_id",
+		"errorResponse": {
+			"GET 404": {
+				"message": "deck not found"
+			},
+			"GET 400": {
+				"message": "bad or empty request body"
+			},
+			"GET 400": {
+				"message": "bad deck_id"
+			}
+		},
+		"exampleRequestBody": [
+			{
+				"Q": "What is event-driven architecture in Node.js, and how does it facilitate concurrency? ",
+				"A": "Node.js employs an event-driven architecture, where all I/O operations are asynchronous and executed in a non-blocking manner. This design enables the server to handle multiple concurrent connections efficiently by registering callbacks for different events, ensuring high scalability and responsiveness. (Source: Node.js Documentation)",
+				"tag": "nodejs",
+				"Y": 0,
+				"N": 1
+			},
+			{
+				"Q": "How does Node.js handle streaming data, and what are some use cases for this capability? ",
+				"A": "Node.js provides built-in support for streaming data, allowing efficient processing of large datasets without loading the entire content into memory. This feature is valuable for handling file uploads, working with large media files, and building realtime data processing systems. (Source: Node.js Stream API Documentation)",
+				"tag": "nodejs",
+				"Y": 2,
+				"N": 0
+			}
+		]
+	}
 }

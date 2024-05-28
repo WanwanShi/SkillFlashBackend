@@ -239,26 +239,26 @@ describe("PATCH /api/users/:username", () => {
 				});
 			});
 	});
-});
-test("PATCH 404 - responds with an error when passing an username for a user that does not exist in the database", () => {
-	return request(app)
-		.patch("/api/users/notexist")
-		.send({ username: "newUsername", email: "hello@gmail.com" })
-		.expect(404)
-		.then(({ body }) => {
-			const { message } = body;
-			expect(message).toBe("User not found");
-		});
-});
-test("PATCH:400  responds with an error when passing an invalid username or email for a user", () => {
-	return request(app)
-		.patch("/api/users/Dino36")
-		.send({ username: "ne", email: "hello@m" })
-		.expect(400)
-		.then(({ body }) => {
-			const { message } = body;
-			expect(message).toBe("Invalid request body");
-		});
+	test("PATCH 404 - responds with an error when passing an username for a user that does not exist in the database", () => {
+		return request(app)
+			.patch("/api/users/notexist")
+			.send({ username: "newUsername", email: "hello@gmail.com" })
+			.expect(404)
+			.then(({ body }) => {
+				const { message } = body;
+				expect(message).toBe("User not found");
+			});
+	});
+	test("PATCH:400  responds with an error when passing an invalid username or email for a user", () => {
+		return request(app)
+			.patch("/api/users/Dino36")
+			.send({ username: "ne", email: "hello@m" })
+			.expect(400)
+			.then(({ body }) => {
+				const { message } = body;
+				expect(message).toBe("Invalid request body");
+			});
+	});
 });
 
 describe("GET /api/decks/:username", () => {

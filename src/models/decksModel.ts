@@ -76,6 +76,11 @@ export async function patchDeck(deck_id: string, deckName: string, tags: []) {
     deck.tags,
     deck.chatHistory
   );
+  if (!newChatHistory || !cards)
+    return Promise.reject({
+      status: 400,
+      message: "Failed retrieving cards from AI",
+    });
 
   if (deckName && typeof deckName === "string") deck.deckName = deckName;
   if (cards && Array.isArray(cards)) deck.cards = [...cards, ...deck.cards];

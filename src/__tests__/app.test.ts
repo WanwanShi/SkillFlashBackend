@@ -43,7 +43,7 @@ describe("/api/tags", () => {
 			.get("/api/tags")
 			.expect(200)
 			.then(({ body: { tags } }) => {
-				expect(tags).toHaveLength(50);
+				expect(tags).toHaveLength(235);
 				tags.forEach((tag: object) => {
 					expect(tag).toMatchObject({
 						tagName: expect.any(String),
@@ -58,7 +58,7 @@ describe("/api/tags", () => {
 			.get("/api/tags?tagCategory=technical-skills")
 			.expect(200)
 			.then(({ body: { tags } }) => {
-				expect(tags).toHaveLength(10);
+				expect(tags).toHaveLength(90);
 				tags.forEach((tag: object) => {
 					expect(tag).toMatchObject({
 						tagName: expect.any(String),
@@ -375,7 +375,7 @@ describe("PATCH /api/decks/:deck_id", () => {
 			.patch("/api/decks/664e21109425c7ba3ae7fa85")
 			.send({
 				deckName: "deck2",
-				tags: ["Angular", "javascript", "nodejs", "supabase", "vue"],
+				tags: ["Angular", "javascript", "nodejs", "Supabase", "vue"],
 			})
 			.expect(200)
 			.then(({ body: { deck } }) => {

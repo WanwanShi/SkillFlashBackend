@@ -37,7 +37,7 @@ describe("/api", () => {
 	});
 });
 
-describe("/api/tags", () => {
+describe.only("/api/tags", () => {
 	test("GET:200 responds with an array of tags object containing two properties: tagName tagCategory", () => {
 		return request(app)
 			.get("/api/tags")

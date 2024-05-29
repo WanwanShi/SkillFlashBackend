@@ -37,6 +37,7 @@ describe("GET /api", () => {
   });
 });
 
+
 describe("GET /api/tags", () => {
   test("GET:200 responds with an array of tags object containing two properties: tagName tagCategory", () => {
     return request(app)
@@ -52,6 +53,7 @@ describe("GET /api/tags", () => {
         });
       });
   });
+
 
   test("GET:200 responds with an array of tags object filter by tagCategory query", () => {
     return request(app)

@@ -66,9 +66,9 @@ After installing and starting the server, the API will be accessible at your spe
 🔘 GET /api
 Description: Serves a JSON representation of all the available endpoints of the API.
 
-#### Example Response:
+✅ Example Response:
 
-{✅
+{
 "endpoints": {
 "GET /api/tags": "Serves an array of all tags",
 "POST /api/users/signup": "Creates a new user",
@@ -84,9 +84,9 @@ Description: Serves a JSON representation of all the available endpoints of the 
 Query Parameters:
 tagCategory (optional): Filters tags by category.
 
-#### Example Response:
+✅ Example Response:
 
-{✅
+{
 "tags":
 [
 {
@@ -107,9 +107,7 @@ tagCategory (optional): Filters tags by category.
 ]
 }
 
-#### ❌
-
-Error Responses:
+❌Error Responses:
 
 {status:400, message: "Invalid query"}
 
@@ -177,7 +175,7 @@ status:400, message: " username and password do not match "
 
 Description: Checks if a username exists.
 
-Example Response:✅
+✅ Example Response:
 
 {
 "exist": true
@@ -225,7 +223,7 @@ status:400, message: " malformed request body"
 
 Description: Serves an array of decks for a specific user.
 
-Example Response:✅
+✅ Example Response:
 
 {
 "decks": [

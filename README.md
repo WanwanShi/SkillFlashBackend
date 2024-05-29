@@ -20,15 +20,21 @@ You can also find the SkillFlash frontend here:(https://github.com/Roodbaraky/Sk
 
 ### Clone the repository
 
-`git clone https://github.com/your-username/skillflash-backend.git`
+```
+git clone https://github.com/your-username/skillflash-backend.git
+```
 
 ### Navigate to the project directory:
 
-`cd skillflash-backend`
+```
+cd skillflash-backend
+```
 
 ### Install dependencies:
 
-`npm install`
+```
+npm install
+```
 
 ### Set up environment variables:
 
@@ -45,7 +51,9 @@ API_KEY=<replace_with_your_cohere_api_key here>
 
 ### Start the server:
 
-`npm start`
+```
+npm start
+```
 
 ## 3️⃣Usage
 
@@ -64,13 +72,12 @@ Description: Serves a JSON representation of all the available endpoints of the 
 "endpoints": {
 "GET /api/tags": "Serves an array of all tags",
 "POST /api/users/signup": "Creates a new user",
-...
-}
+"POST /api/users/login": "Authenticates an existing user",}
 }
 
 ### Tags
 
-🔘GET /api/tags
+🔘 GET /api/tags
 
 #### Description: Serves an array of all tags.
 
@@ -80,7 +87,8 @@ tagCategory (optional): Filters tags by category.
 #### Example Response:
 
 {
-"tags": [
+"tags":
+[
 {
 "_id": "664b46f82c0e05e0e615dd9f",
 "tagName": "JavaScript",
@@ -101,33 +109,42 @@ tagCategory (optional): Filters tags by category.
 
 #### Error Responses:
 
-      400 Invalid query
+{status:400, message: "Invalid query"}
 
 ### Users
 
 #### 🔘POST /api/users/signup
 
-Description: Responds with Error message if it is invalid query.
+Description: Responds with newly created user object.
 Example Request Body:
 
 {
 "username": "test1",
+
 "email": "test1@gmail.com",
+
 "password": "password!12C\_"
 }
 
 Example Response:
+
 {
 "\_id": "664c54c9f9398e48bdfa372a",
+
 "username": "test1",
+
 "email": "test1@gmail.com"
 }
 Error Responses:
-400 failed to signup
+
+{
+status:400, message:" failed to signup"
+}
 
 #### POST /api/users/login
 
 Description: Authenticates an existing user.
+
 Example Request Body:
 
 {
@@ -144,19 +161,24 @@ Example Response:
 }
 
 Error Responses:
-404 username does not exist
-400 username and password do not match
+{
+status:404, message: " username does not exist "
+}
+{
+status:400, message: " username and password do not match "
+}
 
-#### 🔘GET /api/users/
+#### 🔘GET /api/users/:username
 
 Description: Checks if a username exists.
+
 Example Response:
 
 {
 "exist": true
 }
 
-#### PATCH /api/users/
+#### PATCH /api/users/:username
 
 Description: Updates a user object.
 Example Request Body:
@@ -177,16 +199,21 @@ Example Response:
 }
 }
 
-#### 🔘DELETE /api/users/
+#### 🔘DELETE /api/users/:username
 
 Description: Deletes a user and their corresponding decks.
+
 Error Responses:
-404 User not found
-400 Malformed request body
+{
+status:404, message: " user not found "
+}
+{
+status:400, message: " malformed request body"
+}
 
 ### Decks
 
-#### 🔘 GET /api/decks/
+#### 🔘 GET /api/decks/:username
 
 Description: Serves an array of decks for a specific user.
 Example Response:
@@ -212,12 +239,18 @@ Example Response:
 }
 
 Error Responses:
-404 username does not exist
-400 no username provided
+{
+status:404, message:" username does not exist"
+}
 
-#### 🔘 POST /api/decks/
+{
+status:400, message: "no username provided"
+}
+
+#### 🔘 POST /api/decks/:username
 
 Description: Posts a deck for a specific user, returns the posted deck.
+
 Example Request Body:
 
 {
@@ -235,14 +268,28 @@ Example Response:
 "cards": []
 }
 Error Responses:
-404 username does not exist
-400 no username provided
-400 malformed request body
-400 not enough passing cards
+{
+status: 400,
+message: "not enough passing cards"
+}
+{
 
-#### 🔘 PATCH /api/decks/
+status: 400,
+message: "malformed request body"
+}
+{
+status: 400,
+message: "no username provided"
+}
+{
+status: 404,
+message: "username does not exist"
+}
+
+#### 🔘 PATCH /api/decks/:deck_id
 
 Description: Patches properties of a deck for a specific deck_id, returns the patched deck.
+
 Example Request Body:
 
 {
@@ -279,21 +326,40 @@ Example Response:
 }
 
 Error Responses:
-404 deck not found
-400 bad deck_id
-400 bad or empty request body
+{
+status: 400,
+message: "bad deck_id"
+}
+{
+status: 400,
+message: "bad or empty request body"
+}
+{
+
+status: 404,
+message: "deck not found"
+}
 
 #### 🔘 DELETE /api/decks/
 
 Description: Deletes the deck with the corresponding deck_id.
+
 Error Responses:
-404 Deck not found
-400 Malformed request body
 
-#### 🔘 PATCH /api/decks/
+{
+status: 400,
+message: "bad or empty request body"
+}
+{
 
-/cards
+status: 404,
+message: "deck not found"
+}
+
+#### 🔘 PATCH /api/decks/:deck_id/cards
+
 Description: Patches properties of cards in the deck for a specific deck_id.
+
 Example Request Body:
 
 [
@@ -312,25 +378,37 @@ Example Request Body:
 "N": 0
 }
 ]
-Error Responses:
-404 deck not found
-400 bad or empty request body
-400 bad deck_id
 
-### Hosted Version of the API (https://skillflashbackend.onrender.com/api/)
+Error Responses:
+
+{
+status: 400,
+message: "bad or empty request body"
+}
+{
+
+status: 404,
+message: "deck not found"
+}
+{
+status: 404,
+message: "bad deck_id"
+}
+
+### Hosted Version of the API
+
+You can fine the API hosted on Render (https://render.com/) at the following link:
+(https://skillflashbackend.onrender.com/api/)
 
 ### Acknowledgements
-
----
 
 👏👏👏👏👏👏👏👏
 Huge thanks is in order to all of the students and mentors on the March 2024 Software Development Cohort. In particular, the members of 'elloworld for their hard work and dedicated contributions over the course of the project:
 
 👩🏻‍💻Ana Gomes (https://github.com/anaggomes)
+
 🧑🏻‍💻Huajie He (https://github.com/aytchhh)
+
 👨🏻‍💻Koorosh Roodbaraky (https://github.com/Roodbaraky)
+
 👩🏻‍💻Wanwan (Wendy) Shi (https://github.com/WanwanShi)
-
-```
-
-```

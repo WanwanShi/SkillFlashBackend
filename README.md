@@ -1,22 +1,22 @@
 # SkillFlashBackend
 
-About
+1️⃣ About SkillFlash
 This is the backend for SkillFlash, a platform designed to help users prepare for technical interviews by organizing and accessing various study materials, including question decks and tags. This backend serves as an API for managing users, tags, and decks of questions.
 You can also find the SkillFlash frontend here:(https://github.com/Roodbaraky/SkillFlashFrontend)
 
 ## Table of Contents
 
-    ### Installation
-    ### Usage
-    ### API Endpoints
-    ### General
-    ### Tags
-    ### Users
-    ### Decks
-    ### Hosted version
-    ### Acknowledgements
+    Installation
+    Usage
+    API Endpoints
+    General
+    Tags
+    Users
+    Decks
+    Hosted version
+    Acknowledgements
 
-## Installation
+## 2️⃣Installation
 
 ### Clone the repository
 
@@ -32,11 +32,11 @@ You can also find the SkillFlash frontend here:(https://github.com/Roodbaraky/Sk
 
 ### Set up environment variables:
 
-`cp .env.example .env`
+create .env file in your root directory
 
 ### Edit .env to include your configuration
 
-create a .env file in the root directory of the project and add the following variables:
+In the .env file you created, add the following variables:
 
 ```
 URI=<replace_with_your_mongo_uri here>
@@ -47,20 +47,19 @@ API_KEY=<replace_with_your_cohere_api_key here>
 
 `npm start`
 
-## Usage
+## 3️⃣Usage
 
 After installing and starting the server, the API will be accessible at your specified port. Use the endpoints described below to interact with the backend.
 
-## API Endpoints
+## 4️⃣API Endpoints
 
 ### General
 
-GET /api
+🔘 GET /api
 Description: Serves a JSON representation of all the available endpoints of the API.
 
 #### Example Response:
 
-```
 {
 "endpoints": {
 "GET /api/tags": "Serves an array of all tags",
@@ -68,11 +67,10 @@ Description: Serves a JSON representation of all the available endpoints of the 
 ...
 }
 }
-```
 
 ### Tags
 
-GET /api/tags
+🔘GET /api/tags
 
 #### Description: Serves an array of all tags.
 
@@ -81,7 +79,6 @@ tagCategory (optional): Filters tags by category.
 
 #### Example Response:
 
-```
 {
 "tags": [
 {
@@ -101,106 +98,95 @@ tagCategory (optional): Filters tags by category.
 }
 ]
 }
-```
 
 #### Error Responses:
 
-    ```
-    400 Invalid query
-    ```
+      400 Invalid query
 
 ### Users
 
-#### POST /api/users/signup
+#### 🔘POST /api/users/signup
 
 Description: Responds with Error message if it is invalid query.
 Example Request Body:
 
-````{
+{
 "username": "test1",
 "email": "test1@gmail.com",
 "password": "password!12C\_"
-}```
-Example Response:
+}
 
-```{
+Example Response:
+{
 "\_id": "664c54c9f9398e48bdfa372a",
 "username": "test1",
 "email": "test1@gmail.com"
-}```
+}
 Error Responses:
-```400 failed to signup```
+400 failed to signup
 
 #### POST /api/users/login
 
 Description: Authenticates an existing user.
 Example Request Body:
 
-````
-
 {
 "username": "test1",
 "password": "zUz_0n7y!123YXtr8pL"
 }
 
-```
-
 Example Response:
-
-```
 
 {
 "\_id": "664c54c9f9398e48bdfa372a",
 "username": "test1",
 "email": "test1@gmail.com"
-}```
+}
 
 Error Responses:
-`404 username does not exist`
-`400 username and password do not match`
+404 username does not exist
+400 username and password do not match
 
-####GET /api/users/
+#### 🔘GET /api/users/
+
 Description: Checks if a username exists.
 Example Response:
 
-````
 {
 "exist": true
-}```
+}
 
 #### PATCH /api/users/
 
 Description: Updates a user object.
 Example Request Body:
 
-````
-
 {
 "username": "newUsername",
 "email": "hello@gmail.com",
 "password": "newPassword!123"
-}```
+}
+
 Example Response:
 
-````
 {
 "user": {
 "\_id": "new ObjectId('66548f70bf69f77ff324bceb')",
 "username": "newUsername",
 "email": "hello@gmail.com"
 }
-}```
+}
 
-#### DELETE /api/users/
+#### 🔘DELETE /api/users/
 
 Description: Deletes a user and their corresponding decks.
 Error Responses:
-```404 User not found```
-```400 Malformed request body```
+404 User not found
+400 Malformed request body
 
 ### Decks
 
-#### GET /api/decks/
+#### 🔘 GET /api/decks/
 
 Description: Serves an array of decks for a specific user.
 Example Response:
@@ -226,10 +212,10 @@ Example Response:
 }
 
 Error Responses:
-```404 username does not exist```
-```400 no username provided```
+404 username does not exist
+400 no username provided
 
-#### POST /api/decks/
+#### 🔘 POST /api/decks/
 
 Description: Posts a deck for a specific user, returns the posted deck.
 Example Request Body:
@@ -249,12 +235,12 @@ Example Response:
 "cards": []
 }
 Error Responses:
-```404 username does not exist```
-```400 no username provided```
-```400 malformed request body```
-```400 not enough passing cards```
+404 username does not exist
+400 no username provided
+400 malformed request body
+400 not enough passing cards
 
-#### PATCH /api/decks/
+#### 🔘 PATCH /api/decks/
 
 Description: Patches properties of a deck for a specific deck_id, returns the patched deck.
 Example Request Body:
@@ -293,18 +279,19 @@ Example Response:
 }
 
 Error Responses:
-```404 deck not found```
-```400 bad deck_id```
-```400 bad or empty request body```
+404 deck not found
+400 bad deck_id
+400 bad or empty request body
 
-#### DELETE /api/decks/
+#### 🔘 DELETE /api/decks/
 
 Description: Deletes the deck with the corresponding deck_id.
 Error Responses:
-```404 Deck not found```
-```400 Malformed request body```
+404 Deck not found
+400 Malformed request body
 
-#### PATCH /api/decks/
+#### 🔘 PATCH /api/decks/
+
 /cards
 Description: Patches properties of cards in the deck for a specific deck_id.
 Example Request Body:
@@ -326,21 +313,24 @@ Example Request Body:
 }
 ]
 Error Responses:
-```404 deck not found```
-```400 bad or empty request body```
-```400 bad deck_id```
-
-
+404 deck not found
+400 bad or empty request body
+400 bad deck_id
 
 ### Hosted Version of the API (https://skillflashbackend.onrender.com/api/)
 
 ### Acknowledgements
 
+---
+
+👏👏👏👏👏👏👏👏
 Huge thanks is in order to all of the students and mentors on the March 2024 Software Development Cohort. In particular, the members of 'elloworld for their hard work and dedicated contributions over the course of the project:
 
-Ana Gomes
-Huajie He
-Koorosh Roodbaraky
-Wanwan (Wendy) Shi
+👩🏻‍💻Ana Gomes (https://github.com/anaggomes)
+🧑🏻‍💻Huajie He (https://github.com/aytchhh)
+👨🏻‍💻Koorosh Roodbaraky (https://github.com/Roodbaraky)
+👩🏻‍💻Wanwan (Wendy) Shi (https://github.com/WanwanShi)
 
-````
+```
+
+```

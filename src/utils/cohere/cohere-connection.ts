@@ -3,8 +3,6 @@ import { stringToObject } from "./utils";
 import * as dotenv from "dotenv";
 import * as path from "path";
 
-
-
 dotenv.config({
   path: path.resolve(__dirname, "../../../.env"),
 });
@@ -15,8 +13,11 @@ const cohere = new CohereClient({
   token: apiKey,
 });
 
-export async function getCohereCards(message: string, chatHistory: Array<{}>):Promise<any> {
-  console.log('AI connected')
+export async function getCohereCards(
+  message: string,
+  chatHistory: Array<{}>
+): Promise<any> {
+  console.log("AI connected");
   const testPreamble = `
 ## Task & Context
 You are helping tech professionals preparing for an interview. Generate the exact requested number of flashcards with Q: and A: format, including a tag with the respective topic(one topic only per flashcard) used for that question. Tailor the questions to the proficiency level requested by the user. Do NOT return any code snippets, titles, figures, or labels. Do not add an intro or group the responses. Source the content primarily from MDN docs and educational resources. Add the source of the information to the end of each answer. Answers must be 250 to 450 characters long. No repeated questions. Do not number the questions. 
@@ -28,6 +29,7 @@ You are helping tech professionals preparing for an interview. Generate the exac
      Q: What is React, and what problem does it solve for web developers? ,
      A: React is a JavaScript library for building user interfaces. It introduces a component-based architecture and a virtual DOM, making it efficient and predictable to create and maintain complex UIs. (Source: React Documentation)
      tag: React`;
+
   try {
     const response = await cohere.chat({
       model: "command-r-plus",
@@ -45,23 +47,19 @@ You are helping tech professionals preparing for an interview. Generate the exac
 
     return [newChatHistory, flashcards];
   } catch (error) {
-    
     return Promise.reject(error);
   }
 }
-
-// const keywords = ["Angular", "scrum", "paired programming"];
-// const numberQs = 20;
-// const difficulty = "advanced";
-// const message = `Give me ${numberQs} flashcards about the following topics ${keywords} for a ${difficulty} proficiency level`;
-//example chat history
 
 export interface ChatHistory {
   role: string;
   message: string;
 }
 export const chatHistory: ChatHistory[] = [
-  { role: "USER", message: `Give me 20 flashcards about the following topics ["Angular", "scrum", "paired programming"].` },
+  {
+    role: "USER",
+    message: `Give me 20 flashcards about the following topics ["Angular", "scrum", "paired programming"].`,
+  },
   {
     role: "CHATBOT",
     message: `Q: What is Node.js, and why is it associated with server-side JavaScript?
@@ -141,11 +139,3 @@ tag: Angular
 // tag: typescript`,
   },
 ];
-
-// const secondMessage = `Give me 20 NEW flashcards about the following topics: ${keywords} `;
-
-//first request
-// getCohereCards(message, []);
-
-//second request
-// getCohereCards(secondMessage, chatHistory);

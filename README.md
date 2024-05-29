@@ -68,7 +68,7 @@ Description: Serves a JSON representation of all the available endpoints of the 
 
 #### Example Response:
 
-{
+{✅
 "endpoints": {
 "GET /api/tags": "Serves an array of all tags",
 "POST /api/users/signup": "Creates a new user",
@@ -86,7 +86,7 @@ tagCategory (optional): Filters tags by category.
 
 #### Example Response:
 
-{
+{✅
 "tags":
 [
 {
@@ -107,7 +107,9 @@ tagCategory (optional): Filters tags by category.
 ]
 }
 
-#### Error Responses:
+#### ❌
+
+Error Responses:
 
 {status:400, message: "Invalid query"}
 
@@ -116,7 +118,7 @@ tagCategory (optional): Filters tags by category.
 #### 🔘POST /api/users/signup
 
 Description: Responds with newly created user object.
-Example Request Body:
+Example Request Body:🆗
 
 {
 "username": "test1",
@@ -126,7 +128,7 @@ Example Request Body:
 "password": "password!12C\_"
 }
 
-Example Response:
+✅ Example Response:
 
 {
 "\_id": "664c54c9f9398e48bdfa372a",
@@ -135,7 +137,8 @@ Example Response:
 
 "email": "test1@gmail.com"
 }
-Error Responses:
+
+❌ Error Responses:
 
 {
 status:400, message:" failed to signup"
@@ -145,14 +148,14 @@ status:400, message:" failed to signup"
 
 Description: Authenticates an existing user.
 
-Example Request Body:
+🆗 Example Request Body:
 
 {
 "username": "test1",
 "password": "zUz_0n7y!123YXtr8pL"
 }
 
-Example Response:
+✅ Example Response:
 
 {
 "\_id": "664c54c9f9398e48bdfa372a",
@@ -160,10 +163,12 @@ Example Response:
 "email": "test1@gmail.com"
 }
 
-Error Responses:
+❌ Error Responses:
+
 {
 status:404, message: " username does not exist "
 }
+
 {
 status:400, message: " username and password do not match "
 }
@@ -172,7 +177,7 @@ status:400, message: " username and password do not match "
 
 Description: Checks if a username exists.
 
-Example Response:
+Example Response:✅
 
 {
 "exist": true
@@ -181,7 +186,8 @@ Example Response:
 #### PATCH /api/users/:username
 
 Description: Updates a user object.
-Example Request Body:
+
+🆗 Example Request Body:
 
 {
 "username": "newUsername",
@@ -189,7 +195,7 @@ Example Request Body:
 "password": "newPassword!123"
 }
 
-Example Response:
+✅ Example Response:
 
 {
 "user": {
@@ -203,10 +209,12 @@ Example Response:
 
 Description: Deletes a user and their corresponding decks.
 
-Error Responses:
+❌ Error Responses:
+
 {
 status:404, message: " user not found "
 }
+
 {
 status:400, message: " malformed request body"
 }
@@ -216,7 +224,9 @@ status:400, message: " malformed request body"
 #### 🔘 GET /api/decks/:username
 
 Description: Serves an array of decks for a specific user.
-Example Response:
+
+Example Response:✅
+
 {
 "decks": [
 {
@@ -227,6 +237,7 @@ Example Response:
 "Y": 0,
 "N": 0
 },
+
 {
 "card_id": 2,
 "Q": "What is type hinting in Python, and how does it improve code quality?",
@@ -238,7 +249,8 @@ Example Response:
 ]
 }
 
-Error Responses:
+❌ Error Responses:
+
 {
 status:404, message:" username does not exist"
 }
@@ -251,14 +263,15 @@ status:400, message: "no username provided"
 
 Description: Posts a deck for a specific user, returns the posted deck.
 
-Example Request Body:
+🆗 Example Request Body:
 
 {
 "deckName": "deck7",
 "tags": ["java", "python"]
 }
 
-Example Response:
+✅ Example Response:
+
 {
 "\_id": "664e24d92a39772d1e86e942",
 "deckName": "deck7",
@@ -267,20 +280,25 @@ Example Response:
 "chatHistory": [],
 "cards": []
 }
-Error Responses:
+
+❌ Error Responses:
+
 {
 status: 400,
 message: "not enough passing cards"
 }
+
 {
 
 status: 400,
 message: "malformed request body"
 }
+
 {
 status: 400,
 message: "no username provided"
 }
+
 {
 status: 404,
 message: "username does not exist"
@@ -290,13 +308,14 @@ message: "username does not exist"
 
 Description: Patches properties of a deck for a specific deck_id, returns the patched deck.
 
-Example Request Body:
+🆗 Example Request Body:
 
 {
 "deckName": "deck2",
 "tags": ["Angular", "javascript", "nodejs", "supabase", "vue"]
 }
-Example Response:
+
+✅ Example Response:
 
 {
 "deckName": "deck2",
@@ -325,17 +344,19 @@ Example Response:
 ]
 }
 
-Error Responses:
+❌ Error Responses:
+
 {
 status: 400,
 message: "bad deck_id"
 }
+
 {
 status: 400,
 message: "bad or empty request body"
 }
-{
 
+{
 status: 404,
 message: "deck not found"
 }
@@ -344,14 +365,14 @@ message: "deck not found"
 
 Description: Deletes the deck with the corresponding deck_id.
 
-Error Responses:
+❌ Error Responses:
 
 {
 status: 400,
 message: "bad or empty request body"
 }
-{
 
+{
 status: 404,
 message: "deck not found"
 }
@@ -360,7 +381,7 @@ message: "deck not found"
 
 Description: Patches properties of cards in the deck for a specific deck_id.
 
-Example Request Body:
+🆗 Example Request Body:
 
 [
 {
@@ -379,17 +400,18 @@ Example Request Body:
 }
 ]
 
-Error Responses:
+❌ Error Responses:
 
 {
 status: 400,
 message: "bad or empty request body"
 }
-{
 
+{
 status: 404,
 message: "deck not found"
 }
+
 {
 status: 404,
 message: "bad deck_id"

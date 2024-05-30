@@ -4,21 +4,21 @@ import * as dotenv from "dotenv";
 import * as path from "path";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../../../.env"),
+	path: path.resolve(__dirname, "../../../.env"),
 });
 
 const apiKey = process.env.API_KEY as string;
 
 const cohere = new CohereClient({
-  token: apiKey,
+	token: apiKey,
 });
 
 export async function getCohereCards(
-  message: string,
-  chatHistory: Array<{}>
+	message: string,
+	chatHistory: Array<{}>
 ): Promise<any> {
-  console.log("AI connected");
-  const testPreamble = `
+	console.log("AI connected");
+	const testPreamble = `
 ## Task & Context
 You are helping tech professionals preparing for an interview. Generate the exact requested number of flashcards with Q: and A: format, including a tag with the respective topic(one topic only per flashcard) used for that question. Tailor the questions to the proficiency level requested by the user. Do NOT return any code snippets, titles, figures, or labels. Do not add an intro or group the responses. Source the content primarily from MDN docs and educational resources. Add the source of the information to the end of each answer. Answers must be 250 to 450 characters long. No repeated questions. Do not number the questions. 
 
@@ -30,39 +30,40 @@ You are helping tech professionals preparing for an interview. Generate the exac
      A: React is a JavaScript library for building user interfaces. It introduces a component-based architecture and a virtual DOM, making it efficient and predictable to create and maintain complex UIs. (Source: React Documentation)
      tag: React`;
 
-  try {
-    const response = await cohere.chat({
-      model: "command-r-plus",
-      chat_history: chatHistory,
-      message: message,
-      temperature: 0.3,
-      preamble: testPreamble,
-    });
+	try {
+		const response = await cohere.chat({
+			model: "command-r-plus",
+			chat_history: chatHistory,
+			message: message,
+			temperature: 0.3,
+			preamble: testPreamble,
+		});
 
-    const newChatHistory = [
-      { role: "USER", message: message },
-      { role: "CHATBOT", message: response.text.split("\n").join(" ") },
-    ];
-    const flashcards = stringToObject(response.text);
+		const newChatHistory = [
+			{ role: "USER", message: message },
+			{ role: "CHATBOT", message: response.text.split("\n").join(" ") },
+		];
 
-    return [newChatHistory, flashcards];
-  } catch (error) {
-    return Promise.reject(error);
-  }
+		const flashcards = stringToObject(response.text);
+
+		return [newChatHistory, flashcards];
+	} catch (error) {
+		return Promise.reject(error);
+	}
 }
 
 export interface ChatHistory {
-  role: string;
-  message: string;
+	role: string;
+	message: string;
 }
 export const chatHistory: ChatHistory[] = [
-  {
-    role: "USER",
-    message: `Give me 20 flashcards about the following topics ["Angular", "scrum", "paired programming"].`,
-  },
-  {
-    role: "CHATBOT",
-    message: `Q: What is Node.js, and why is it associated with server-side JavaScript?
+	{
+		role: "USER",
+		message: `Give me 20 flashcards about the following topics ["Angular", "scrum", "paired programming"].`,
+	},
+	{
+		role: "CHATBOT",
+		message: `Q: What is Node.js, and why is it associated with server-side JavaScript?
 A: Node.js is a cross-platform runtime environment that allows JavaScript code execution outside of a browser. It provides an event-driven architecture and non-blocking I/O, making it ideal for building scalable network applications, including servers. (Source: Node.js Documentation)
 tag: nodejs
 
@@ -137,5 +138,5 @@ tag: Angular
 // Q: How does TypeScript handle type compatibility and type inference?
 // A: TypeScript uses structural typing, where type compatibility is determined by the presence of specific properties, rather than their declaration. Type inference automatically determines types based on values, reducing the need for explicit type annotations. (Source: TypeScript Handbook)
 // tag: typescript`,
-  },
+	},
 ];

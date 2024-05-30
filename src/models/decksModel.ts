@@ -90,6 +90,8 @@ export async function patchDeck(deck_id: string, deckName: string, tags: []) {
 		});
 
 		deck.cards = [...newCards, ...deck.cards];
+		// console.log(deck.cards);
+		// console.log(deck, "newDeck");
 	}
 
 	if (newChatHistory && Array.isArray(newChatHistory))
@@ -103,8 +105,17 @@ export async function patchDeck(deck_id: string, deckName: string, tags: []) {
 		});
 	}
 
-	await db.collection("decks").updateOne({ _id: objectId }, { $set: deck });
-	return await db.collection("decks").findOne({ _id: objectId });
+	const result = await db
+		.collection("decks")
+		.updateOne({ _id: objectId }, { $set: { ...deck } });
+	if (result.acknowledged) {
+		return await db.collection("decks").findOne({ _id: objectId });
+	} else {
+		return Promise.reject({
+			status: 404,
+			message: "The deck was not successfully updated",
+		});
+	}
 }
 
 export async function patchDeckUsername(deck_id: string, deck: {}) {
